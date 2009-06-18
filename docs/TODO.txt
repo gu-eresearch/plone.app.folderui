@@ -1,0 +1,19 @@
+
+Still to do:
+------------
+
+* QueryRunner components to use catalog to adapt, execute contents of
+  IComposedQuery as a portal_catalog query.
+
+* Testing query components against live content.
+
+* Support multiple queries to same index.
+
+* HTML/JavaScript/CSS work as needed for listing view mockups.
+
+* Work on views for listings and filters.
+
+* Work on configuration backend; initially load configuration from filesystem.
+
+* Work on configuration front-end.
+

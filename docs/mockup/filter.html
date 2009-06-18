@@ -1,0 +1,270 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+  <head>
+    <title>Multiset facet UI mockup</title>
+    <style>
+      body {font-size:12px;}
+      div.searchfilter {
+        width:20em;
+        border:1px solid #ddd;
+        font-family:Liberation Sans,Arial,Verdana;
+      }
+      div.searchfilter h3 { background-color:#666;
+        color:#fff;
+        font-size:1.4em;
+      }
+      div.searchfilter ul {
+        padding:0.3em;
+      }
+      div.searchfilter ul li {
+        list-style-type:none;
+        margin:0;
+        clear:both;
+      }
+      div.searchfilter span.act {
+        display:block;
+        float:right;
+        margin-top:-1.3em;
+      }
+      div.searchfilter a.not {
+        background-color:#ff0;
+        font-weight:bold;
+        text-decoration:none;
+        border:1px solid #099;
+        padding:0 2px;
+        color:#900;
+        font-size:1.2em;
+        line-height:0.8em;
+        margin:2px;
+        display:block;
+        float:left;
+      }
+    </style>
+    <script type="text/javascript" src="./jquery-1.3.2.js"></script>
+  </head>
+  <body>
+    <div class="facets">
+      <div class="searchfilter facet.expires">
+        <form action="">
+        <h3>Expires, progressively enchanced JS</h3>
+        <ul class="facetmenu">
+          <li>
+            <a class="filterchoice" href="#">Today</a>
+            <span class="count">10</span>
+            <span class="act">
+              <a href="#" class="not" title="NOT">&not;</a>
+              <input type="checkbox" name="facet.expires" />
+            </span>
+          </li>
+          <li>
+            <a class="filterchoice" href="#">Yesterday</a>
+            <span class="count">22</span>
+            <span class="act">
+              <a href="#" class="not">&not;</a>
+              <input type="checkbox" name="facet.expires" />
+            </span>
+          </li>
+          <li>
+            <a class="filterchoice" href="#" class="nolink">Tomorrow</a>
+            <span class="count">0</span>
+            <span class="act">
+              <a href="#" class="not">&not;</a>
+              <input type="checkbox" name="facet.expires" />
+            </span>
+          </li>
+          <li>
+            <a class="filterchoice" href="#">This month</a>
+            <span class="count">75</span>
+            <span class="act">
+              <a href="#" class="not">&not;</a>
+              <input type="checkbox" name="facet.expires" />
+            </span>
+          </li>
+          <li>
+            <a class="filterchoice" href="#">Last month</a>
+            <span class="count">39</span>
+            <span class="act">
+              <a href="#" class="not">&not;</a>
+              <input type="checkbox" name="facet.expires" />
+            </span>
+          </li>
+          <li>
+            <a class="filterchoice" href="#">Past</a>
+            <span class="count">140</span>
+            <span class="act">
+              <a href="#" class="not">&not;</a>
+              <input type="checkbox" name="facet.expires" />
+            </span>
+          </li>
+          <li>
+            <a class="filterchoice" href="#">Upcoming</a>
+            <span class="count">460</span>
+            <span class="act">
+              <a href="#" class="not">&not;</a>
+              <input type="checkbox" name="facet.expires" />
+            </span>
+          </li>
+        </ul>
+        <input type="submit" value="Modify search">
+        </form>
+      </div>
+      <div class="searchfilter" title="noscript">
+        <form action="">
+        <h3>Expires, no script</h3>
+        <ul class="facetmenu">
+          <li>
+            <a class="filterchoice" href="#">Today</a>
+            <span class="count">10</span>
+            <span class="act">
+              <a href="#" class="not">&not;</a>
+              <input type="checkbox" name="facet.expires" />
+            </span>
+          </li>
+          <li>
+            <a class="filterchoice" href="#">Yesterday</a>
+            <span class="count">22</span>
+            <span class="act">
+              <a href="#" class="not">&not;</a>
+              <input type="checkbox" name="facet.expires" />
+            </span>
+          </li>
+          <li>
+            <a class="filterchoice" href="#" class="nolink">Tomorrow</a>
+            <span class="count">0</span>
+            <span class="act">
+              <a href="#" class="not">&not;</a>
+              <input type="checkbox" name="facet.expires" />
+            </span>
+          </li>
+          <li>
+            <a class="filterchoice" href="#">This month</a>
+            <span class="count">75</span>
+            <span class="act">
+              <a href="#" class="not">&not;</a>
+              <input type="checkbox" name="facet.expires" />
+            </span>
+          </li>
+          <li>
+            <a class="filterchoice" href="#">Last month</a>
+            <span class="count">39</span>
+            <span class="act">
+              <a href="#" class="not">&not;</a>
+              <input type="checkbox" name="facet.expires" />
+            </span>
+          </li>
+          <li>
+            <a class="filterchoice" href="#">Past</a>
+            <span class="count">140</span>
+            <span class="act">
+              <a href="#" class="not">&not;</a>
+              <input type="checkbox" name="facet.expires" />
+            </span>
+          </li>
+          <li>
+            <a class="filterchoice" href="#">Upcoming</a>
+            <span class="count">460</span>
+            <span class="act">
+              <a href="#" class="not">&not;</a>
+              <input type="checkbox" name="facet.expires" />
+            </span>
+          </li>
+        </ul>
+        <input type="submit" value="Modify search">
+        </form>
+      </div>
+    </div>
+      <script>
+        function deselect_all(facet) {
+          $('input[type=checkbox]', facet).removeAttr('checked');
+          var filters = $('a.filterchoice');
+          for (var i=0; i<filters.length; i++) {
+            var filterli = $(filters[i]).parents('li');
+            clear_filter_selection(filterli);
+          }
+        }
+        
+        function handle_choice() {
+          var choice = ($(this));
+          var facet = choice.parents('div.searchfilter');
+          var filterli = choice.parent('li');
+          deselect_all(facet);
+          $('input[type=checkbox]', facet).removeAttr('checked');
+          toggle_filter_selection(filterli);
+          $('input[type=checkbox]', filterli).attr('checked','true');
+          $('input[type=checkbox]', facet).show();
+        }
+        
+        function clear_filter_selection(li) {
+          var filterli = $(li);
+          var choice = $('a.filterchoice', filterli);
+          if (filterli.attr('highlighted')=='true') {
+            choice.attr('style','');
+            filterli.attr('highlighted','false');
+            filterli[0].style.backgroundColor='#fff';
+          }
+        }
+        
+        function toggle_filter_selection(li) {
+          var filterli = $(li);
+          var choice = $('a.filterchoice', filterli);
+          if (filterli.attr('highlighted')=='true') {
+             clear_filter_selection(filterli);
+          }
+          else {
+            choice.attr('style','font-weight:bold');
+            filterli.attr('highlighted','true');
+            filterli[0].style.backgroundColor='#ccf';
+          }
+
+        }
+        
+        function toggle_not(li) {
+          var filterli = $(li);
+          var choice = $('a.filterchoice', filterli);
+          if (filterli.attr('negation')!='true') {
+            filterli.attr('negation', 'true');
+            choice[0].innerHTML = '<strong>(NOT)</strong> ' + choice[0].innerHTML;
+            $('input[type=checkbox]', filterli).attr('checked','true');
+            $('input[type=checkbox]', facet).show();
+            toggle_filter_selection(filterli);
+            filterli[0].style.backgroundColor='#fcc';
+          }
+          else {
+            filterli.attr('negation', 'false');
+            choice[0].innerHTML = choice[0].innerHTML.replace('<strong>(NOT)</strong> ', '');
+            filterli[0].style.backgroundColor='#fff';
+            clear_filter_selection(filterli);
+          }
+        }
+        
+        function handle_not() {
+          toggle_not($(this).parents('li'));
+        }
+        
+        function handle_checkbox() {
+          var checkbox = ($(this));
+          var facet = checkbox.parents('div.searchfilter');
+          var filterli = checkbox.parents('li');
+          var choice = $('a.filterchoice', filterli);
+          toggle_filter_selection(filterli);
+          var all_inputs = $('input[type=checkbox]', facet);
+          var unchecked_inputs = all_inputs.not('[checked]');
+          if (all_inputs.length == unchecked_inputs.length) all_inputs.toggle();
+        }
+        
+        var facets = $('div.searchfilter').filter('[title!=noscript]');
+        for (var i=0; i<facets.length; i++) {
+          facet = $(facets[i]);
+          $('input[type=checkbox]', facet).toggle();
+          $('input[type=checkbox]', facet).removeAttr('checked');
+          $('input[type=submit]', facet).toggle();
+          
+          $('a.filterchoice', facet).bind('click', handle_choice);
+          $('input[type=checkbox]', facet).bind('click', handle_checkbox);
+          $('a.not', facet).bind('click', handle_not);
+        }
+       // $('div.searchfilter input[type=checkbox][name=facet.expires]').toggle();
+       // $('div.searchfilter input[type=submit]').toggle();
+      </script>
+  </body>
+</html>

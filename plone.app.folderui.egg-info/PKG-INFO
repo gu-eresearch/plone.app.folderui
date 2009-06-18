@@ -1,0 +1,25 @@
+Metadata-Version: 1.0
+Name: plone.app.folderui
+Version: 0.01dev
+Summary: Folder user interface enhancements for Plone.
+Home-page: http://dev.plone.org/plone/wiki/Gsoc2009/FolderUiImprovements
+Author: Sean Upton
+Author-email: sdupton@gmail.com
+License: GPL
+Description: Introduction
+        ============
+        
+        
+        
+        Changelog
+        =========
+        
+        0.01 (xxxx-xx-xx)
+        -----------------
+        
+        * Initial release
+        
+Platform: UNKNOWN
+Classifier: Framework :: Plone
+Classifier: Programming Language :: Python
+Classifier: Topic :: Software Development :: Libraries :: Python Modules
