@@ -39,7 +39,7 @@ class QueryFilter(object):
     for _fieldname, _field in getFieldsInOrder(IQueryFilter):
         locals()[_fieldname] = FieldProperty(_field)
     
-    def __init__(self, index=u'', terms=(), query_range='minmax', neg=False):
+    def __init__(self, index=u'', terms=(), query_range=None, neg=False):
         self.index = unicode(index)
         self.terms = tuple([t for t in terms if t is not None])
         self.query_range = query_range
