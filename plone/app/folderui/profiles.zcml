@@ -1,0 +1,22 @@
+<configure
+    xmlns="http://namespaces.zope.org/zope"
+    xmlns:genericsetup="http://namespaces.zope.org/genericsetup"
+    i18n_domain="plone.app.folderui">
+
+  <genericsetup:registerProfile
+      name="default"
+      title="plone.app.folderui"
+      directory="profiles/default"
+      description='Default Profile'
+      provides="Products.GenericSetup.interfaces.EXTENSION"
+      />
+
+  <genericsetup:registerProfile
+      name="facet-samples"
+      title="plone.app.folderui incl. sample content"
+      directory="profiles/facet-samples"
+      description='setup sample content for faceted navigation'
+      provides="Products.GenericSetup.interfaces.EXTENSION"
+      />
+
+</configure>
