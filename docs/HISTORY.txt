@@ -3,6 +3,8 @@ Changelog
 
 0.01 (xxxx-xx-xx)
 -----------------
+ 
+ * add a generic setup profile 'facet-samples' with a set of sample data
 
-* Early initial import to trunk (early development) 2009-06-18.
+ * Early initial import to trunk (early development) 2009-06-18.
 

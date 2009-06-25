@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<import-steps>
+  <import-step id="plone.app.folderui" handler="plone.app.folderui.setuphandlers.setup_sample_content" title="plone.app.folderui sample content" version="1.0">
+    <dependency step="plone-final"/>
+  </import-step>
+</import-steps>
