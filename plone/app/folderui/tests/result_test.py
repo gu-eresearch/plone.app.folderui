@@ -72,6 +72,22 @@ class TestIterableCatalogResults(unittest.TestCase):
         r = self._mk_iter_result()
         assert list(r.iteritems()) == list(r.items()) == zip(
             self.orig_rids, list(r.values()))
+    
+    def testLazyKeys(self):
+        """
+        LazyMap gets rid of _seq attribute storing original sequence of 
+        record ids from a catalog result when all items have been accessed
+        through iteration; we want to ensure we still get keys via the 
+        brains when this happens, though this is a slower edge case we will
+        never likely trigger in production.
+        """
+        result = self.cat()
+        assert hasattr(result, '_seq')
+        dummy = list(result) #force LazyMap to iterate completely
+        assert not hasattr(result, '_seq')
+        r = IterableCatalogResults(result, self.cat)
+        ## calling r.keys() / _keys() calls getRID() for each brain
+        assert list(r.keys()) == self.orig_rids
 
 
 if __name__ == '__main__':
