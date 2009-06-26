@@ -18,6 +18,10 @@ class IQueryFilter(Interface):
     query_range = Choice(vocabulary=mkvocab(('min','max','minmax',None)),
         default=None,
         required=False, )
+    conjunction = Choice(title=u'Intraindex conjunction operator',
+        description=u'Operator for (all of) multiple queries to same index.',
+        vocabulary=mkvocab(('AND','OR')),
+        default='OR',)
     negated = Bool(title=u'Negated?', default=False)
     
     def __add__(other):
@@ -135,5 +139,9 @@ class IDateRangeFactory(IFactory):
         start_function, end_function called with dt value as a single
         argument.
         """
+
+
+class ILazySequence(Interface):
+    """Marker for Lazy sequence such as ZCatalog LazyMap or similar"""
 
 
