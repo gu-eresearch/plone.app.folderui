@@ -3,6 +3,8 @@ Changelog
 
 0.01 (xxxx-xx-xx)
 -----------------
+        
+ * move package sources into 'src/' subdirectiory
  
  * add a generic setup profile 'facet-samples' with a set of sample data
 
