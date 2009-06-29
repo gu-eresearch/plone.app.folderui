@@ -7,7 +7,7 @@ from zope.interface import implements
 from interfaces import ( IFacetPathRules, IFacetSettings, IFacetSpecification,
     IFilterSpecification, FACETS_ALL, )
 from zope.component import getGlobalSiteManager
-from zope.schema import getFieldsInOrder
+from zope.schema import getFieldsInOrder, getFieldNames
 from zope.schema.fieldproperty import FieldProperty
 
 
@@ -31,8 +31,14 @@ class BaseFacetSpecification(object):
     for _fieldname, _field in getFieldsInOrder(IFacetSpecification):
         locals()[_fieldname] = FieldProperty(_field)
     
-    def __init__(self, filters=()):
-        self.filters = list(filters)
+    def __init__(self, name, **kwargs):
+        self.filters = []
+        for k,v in kwargs.items():
+            if k in getFieldNames(IFacetSpecification):
+                setattr(self, k, v)
+    
+    def __call__(self):
+        raise NotImplementedError('todo') #TODO
 
 
 class BaseSettings(object):
@@ -43,8 +49,11 @@ class BaseSettings(object):
     
     implements(IFacetSettings)
     
-    def __init__(self):
+    def __init__(self, *args):
         self._facets = {} # facet name (str) --> IFacetSpecification
+        for arg in args:
+            if IFacetSpecification.providedBy(arg):
+                self._facets[arg.name] = arg
     
     def __getitem__(self, name):
         return self._facets.__getitem__(name)
@@ -79,7 +88,7 @@ class BaseSettings(object):
     def iteritems(self):
         return self._facets.iteritems()
         
-    def __del__(self, name):
+    def __delitem__(self, name):
         del(self._facets[name])
 
 
@@ -142,4 +151,14 @@ class BasePathRules(object):
                 included, excluded = self._list_path(tuple(value[0:i]))
                 result = (result | included) - excluded
         return tuple(result) #note: facet order not determined here
+
+
+FACETS = BaseSettings(
+    BaseFacetSpecification(
+        name=u'owner',
+        title=u'Owner',
+        description=u'Owner of content',
+        multiset=False,
+        filters=[], ),
+)
 
