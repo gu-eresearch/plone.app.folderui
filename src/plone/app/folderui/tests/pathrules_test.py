@@ -4,11 +4,11 @@ Tests for IterableCatalogResults proxy/adapter around fake catalog, results.
 
 import unittest
 from plone.app.folderui.defaults import BasePathRules
+from plone.app.folderui.interfaces import FACETS_ALL
 
-
-class TestIterableCatalogResults(unittest.TestCase):
+class PathRulesTests(unittest.TestCase):
     
-    def testPathRules(self):
+    def test_path_rules(self):
         pathrules = BasePathRules()
         
         # rules for site root
@@ -32,7 +32,18 @@ class TestIterableCatalogResults(unittest.TestCase):
         pathrules.include(('bakery','cookies'), ('nuts',))
         assert set(pathrules(('bakery','cookies'))) == set(
             ('categories','cookies','nuts'))
-
+    
+    def test_disable_facets_for_path(self):
+        pathrules = BasePathRules()
+        pathrules.include((),('owner','categories'))
+        pathrules.include(('bakery',),('cupcakes','cookies'))
+        pathrules.exclude(('bakery','cookies'), FACETS_ALL) #disable all
+        assert set(pathrules(('bakery',))) == set(
+            ('categories','owner','cupcakes','cookies'))
+        assert set(pathrules(('bakery','cookies'))) == set() #should be empty
+    
+    def test_reset_for_path(self):
+        pass
 
 if __name__ == '__main__':
     unittest.main()

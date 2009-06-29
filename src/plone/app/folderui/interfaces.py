@@ -10,6 +10,8 @@ callable_if_exists = lambda o: hasattr(o, '__call__')
 
 mkvocab = lambda seq: SimpleVocabulary([SimpleTerm(e) for e in seq])
 
+FACETS_ALL = 1 #used to include/exclude all facets in configuration
+
 
 class IQueryFilter(Interface):
     """implementation-neutral query fragment to be applied to a single index"""
@@ -189,8 +191,9 @@ class IFacetPathRules(IFacetRules):
     blacklist and whitelist (independent of each other, but both consulted
     on __call__()).
     
-    To disable facets altogether for a path, pass an empty tuple of names
-    to exclude().
+    To disable facets altogether for a path, import FACETS_ALL and pass this
+    or an integer value of 1 for names to exclude() instead of a specific
+    tuple.
     
     To enable facets for a path (and all contained folder not otherwise
     explicitly excluded), pass an empty tuple of names to include().  This 

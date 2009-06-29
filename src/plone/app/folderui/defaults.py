@@ -4,7 +4,8 @@ facets configuration.
 """
 
 from zope.interface import implements
-from interfaces import IFacetPathRules, IFacetSettings, IFacetSpecification, IFilterSpecification
+from interfaces import ( IFacetPathRules, IFacetSettings, IFacetSpecification,
+    IFilterSpecification, FACETS_ALL, )
 from zope.component import getGlobalSiteManager
 from zope.schema import getFieldsInOrder
 from zope.schema.fieldproperty import FieldProperty
@@ -107,11 +108,19 @@ class BasePathRules(object):
         self._whitelist[expr] = tuple(set(existing + list(names)))
     
     def exclude(self, expr, names=()):
+        if names == FACETS_ALL:
+            self._blacklist[expr] = FACETS_ALL
+            return
         existing = self._blacklist.get(expr, [])
         self._blacklist[expr] = tuple(set(existing + list(names)))
     
     def reset(self, expr):
         self._whitelist[expr] = ()
+    
+    def _disabled_for(self, path):
+        if path in self.blacklist:
+            return self.blacklist[path] == FACETS_ALL
+        return False
     
     def _list_path(self, path):
         included = set()
@@ -125,7 +134,12 @@ class BasePathRules(object):
     def __call__(self, value):
         result = set()
         for i in range(len(value)+1):
-            included, excluded = self._list_path(tuple(value[0:i]))
-            result = (result | included) - excluded
+            if self._disabled_for(value):
+                # disable for path deeper levels can override this, but must
+                # do so with specific facet names.
+                result = set()
+            else:
+                included, excluded = self._list_path(tuple(value[0:i]))
+                result = (result | included) - excluded
         return tuple(result) #note: facet order not determined here
 
