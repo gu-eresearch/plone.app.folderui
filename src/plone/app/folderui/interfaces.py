@@ -1,5 +1,5 @@
-from zope.interface import Interface
-from zope.interface.common.mapping import IIterableMapping
+from zope.interface import Interface, Attribute
+from zope.interface.common.mapping import IIterableMapping, IWriteMapping
 from zope.schema import (Bool, Choice, Datetime, List, Object, TextLine, 
     Text, Tuple, )
 from zope.schema.vocabulary import SimpleVocabulary, SimpleTerm
@@ -143,5 +143,80 @@ class IDateRangeFactory(IFactory):
 
 class ILazySequence(Interface):
     """Marker for Lazy sequence such as ZCatalog LazyMap or similar"""
+
+
+class IFacetSettings(IIterableMapping, IWriteMapping):
+    """
+    Registry of facets by name, stores facet names to IFacetSpecification
+    objects
+    """
+
+
+class IFacetRules(Interface):
+    """
+    Set of rules by some predicate/rule.
+    """
+    
+    whitelist = Attribute('Read-only whitelist mapping property')
+    blacklist = Attribute('Read-only blacklist mapping property')
+    
+    def include(predicate, names=()):
+        """Adds names to include whitelist for predicate"""
+    
+    def exclude(predicate, names=()):
+        """Adds names to exclude blacklist for predicate"""
+    
+    def reset(predicate):
+        """
+        Resets and removes whitelist and blacklist configuration for 
+        a predicate
+        """
+    
+    def __call__(value):
+        """
+        Return a list of names given a value to be evaluated against
+        known predicates.
+        """
+
+
+class IFacetPathRules(IFacetRules):
+    """
+    Set of rules for path, where path is either slash-separated-string or
+    tuple of names relative to the site root.  Paths should be normalized
+    on include(), exclude(), reset(), and call.
+    
+    This provides a registry of paths for facets, and it keeps both a
+    blacklist and whitelist (independent of each other, but both consulted
+    on __call__()).
+    
+    To disable facets altogether for a path, pass an empty tuple of names
+    to exclude().
+    
+    To enable facets for a path (and all contained folder not otherwise
+    explicitly excluded), pass an empty tuple of names to include().  This 
+    enables facets, but does not include any names, which means that a folder
+    should 'acquire' included names from parent folders by consulting the 
+    whitelist.
+    
+    __call__(path) intersects whitelist and blacklists for folder and parent
+    paths left-to-right through the hierarchy, with more specific path
+    predicates overriding less-specific ones.  In case of a conflict
+    between a whitelist and blacklist at the same path level, the
+    blacklist wins.
+    """
+
+
+class IFacetRoleRules(IFacetRules):
+    """
+    Set of rules for user role; this should allow for a role named "any"
+    which is a wildcard.  Predicate is a tuple of role names mapped to 
+    any set of names for inclusion/exclusion.
+    
+    Example use-cases:
+    
+    When to include: you want a facet to only appear for manager role.
+    
+    When to exclude: you have a specific role that should never see a facet.
+    """
 
 
