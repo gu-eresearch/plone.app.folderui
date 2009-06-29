@@ -159,6 +159,7 @@ FACETS = BaseSettings(
         title=u'Owner',
         description=u'Owner of content',
         multiset=False,
-        filters=[], ),
+        filters=[],
+        query_vocabulary=True, ),
 )
 

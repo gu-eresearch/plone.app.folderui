@@ -103,6 +103,11 @@ class IFacetSpecification(Interface):
         description=u'Operator for multiple selections (AND/OR)',
         vocabulary=mkvocab(('AND','OR')),
         default='OR')
+    query_vocabulary = Bool(
+        title=u'Query vocabulary?',
+        description=u'Query vocabulary factory for additional filters?',
+        default=False,
+        )
     filters = List(
         value_type=Object(schema=IFilterSpecification),
         required=False)
