@@ -21,7 +21,7 @@ DAYS = range(1,27) #could be february
 DELTA_RANGE = range(20)
 
 #LIMIT = 10 # for faster testing
-LIMIT = False 
+
 
 def random_dates():
     '''return two dates within a short range in isoformat and
@@ -121,7 +121,6 @@ def get_samples(context):
             if name == 'country':
                 item['country'] = values
                 
-
         else:
             # we can break if we test this script
             if LIMIT and LIMIT <_idnum:
@@ -160,7 +159,7 @@ def setup_sample_content(context):
     for foldername in foldernames:
         if foldername in site.contentIds():
             site.manage_delObjects( [foldername] )
-            logger.info('removed %s' % foldername)
+            logger.info('removed folder %s' % foldername)
 
         site.invokeFactory('Folder', foldername, title=foldername)
         
@@ -173,7 +172,6 @@ def setup_sample_content(context):
 
     # create the items
     for item in items:
-        print item['id']
         content = random_create(site, item)
 
         # maybe publish it

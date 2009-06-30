@@ -3,6 +3,8 @@ Changelog
 
 0.01 (xxxx-xx-xx)
 -----------------
+
+ * add BaseTestCase with convenience methods to create test content
         
  * move package sources into 'src/' subdirectiory
  
