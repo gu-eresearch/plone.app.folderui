@@ -228,3 +228,14 @@ class IFacetRoleRules(IFacetRules):
     """
 
 
+class ITitleLookup(Interface):
+    """
+    Callable function or object that returns a title given a token/value
+    and an optional context.
+    """
+    def __call__(token, context=None):
+        """
+        return unicode title for token, possibly using context for 
+        placeful lookup, if needed.
+        """
+
