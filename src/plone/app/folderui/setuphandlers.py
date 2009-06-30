@@ -21,7 +21,7 @@ DAYS = range(1,27) #could be february
 DELTA_RANGE = range(20)
 
 #LIMIT = 10 # for faster testing
-
+LIMIT = False # for real
 
 def random_dates():
     '''return two dates within a short range in isoformat and
@@ -123,7 +123,7 @@ def get_samples(context):
                 
         else:
             # we can break if we test this script
-            if LIMIT and LIMIT <_idnum:
+            if LIMIT and LIMIT < _idnum:
                 break
 
             # multible newlines might create empty items
