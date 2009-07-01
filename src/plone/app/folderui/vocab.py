@@ -8,7 +8,19 @@ from plone.app.folderui.interfaces import ITitleLookup
 
 
 titlecase = lambda v: v.title()
+
 alsoProvides(titlecase, ITitleLookup)
+
+
+def member_fullname(value, context):
+    mtool = getToolByName('portal_memberdata')
+    info = mtool.getMemberInfo(value)
+    v = info.get('fullname',None)
+    if v: return v
+    return value
+
+alsoProvides(member_fullname, ITitleLookup)
+
 
 class UniqueValuesFactory(object):
     
@@ -25,7 +37,7 @@ class UniqueValuesFactory(object):
         for v in values:
             title = None
             if self.titlefn is not None:
-                title = self.titlefn(t)
+                title = self.titlefn(t, context)
             if title:
                 t = SimpleTerm(value=t, title=title)
             else:
@@ -35,5 +47,7 @@ class UniqueValuesFactory(object):
 
 
 #some factories for indexes:
-all_owners_vfactory = UniqueValuesFactory('owner')
+all_owners_vfactory = UniqueValuesFactory('owner', titlefn=member_fullname)
 #TODO TODO TODO: owner name lookup from member properties as ITitleLookup fn
+
+
