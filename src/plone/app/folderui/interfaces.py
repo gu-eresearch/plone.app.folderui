@@ -3,6 +3,7 @@ from zope.interface.common.mapping import IIterableMapping, IWriteMapping
 from zope.schema import (Bool, Choice, Datetime, List, Object, TextLine, 
     Text, Tuple, )
 from zope.schema.vocabulary import SimpleVocabulary, SimpleTerm
+from zope.schema.interfaces import ITitledTokenizedTerm, IVocabularyFactory
 from zope.component.interfaces import IFactory
 
 
@@ -70,27 +71,38 @@ class IQueryRunner(Interface):
         """
 
 
-class IFilterSpecification(Interface):
+class IFilterSpecification(ITitledTokenizedTerm):
     """
     Search filter specification for faceted search, may be persisted as
-    configuration
+    configuration.
     """
-    name = TextLine(required=True)  #should be unique within facet
-    title = TextLine(required=False) #link title, otherwise uses name
-    description = Text(required=False)
+    token = Attribute('Token',
+        '7-bit read-only str for self.name or self.terms')
+    value = Attribute('Term value',
+        'read-only property alias to self.terms')
+    
+    name = TextLine(title=u'Filter name',
+        required=True)  #should be unique within facet
+    title = TextLine(title=u'Display title',
+        required=False) #link title, otherwise uses name
+    description = Text(title=u'Description of filter', required=False)
     allow_negation = Bool(title=u'Allow negation?',
         description=u'Allow NOT operator on filter.',
         default=True)
     index = TextLine(title=u'Index name or identifier', required=True)
-    terms = Tuple(value_type=Object(schema=Interface), default=())
-    query_range = Choice(vocabulary=mkvocab(('min','max','minmax')), default='minmax')
+    values = Tuple(title=u'Search values',
+        value_type=Object(schema=Interface),
+        default=())
+    query_range = Choice(title=u'Query range',
+        vocabulary=mkvocab(('min','max','minmax')),
+        default='minmax')
     negated = Bool(title=u'Negate query?', default=False)
     
     def __call__():
         """return transient IQueryFilter for this specification"""
 
 
-class IFacetSpecification(Interface):
+class IFacetSpecification(IVocabularyFactory):
     """facet is grouping of search filters"""
     name = TextLine(required=True) #should be unique for all facets
     title = TextLine(required=True)
@@ -112,11 +124,15 @@ class IFacetSpecification(Interface):
         value_type=Object(schema=IFilterSpecification),
         required=False)
     
-    def __call__(filters=()):
+    def __call__(context):
         """
-        Given a tuple of names of filters, construct and return an
-        IComposedQuery object.  If an individual filter is to be negated
-        as part of the query, the filter name should be ('NOT %s' % name)
+        Return a vocabulary object implemening IVocabularyTokenized that 
+        contains terms implementing IFilterSpecification.  Implementations
+        may choose to delegate this activity to another IVocabularyFactory
+        component such as a named utility if de-coupling vocabulary 
+        generation from facet specification is desired.  May include items
+        from static vocabulary (from self.filters), dynamic vocabulary, or
+        some hybrid.
         """
 
 
@@ -146,6 +162,10 @@ class IDateRangeFactory(IFactory):
         start_function, end_function called with dt value as a single
         argument.
         """
+
+
+is_daterange = lambda v: (IDateRange.providedBy(v) or 
+    IDateRangeFactory.providedBy(v))
 
 
 class ILazySequence(Interface):

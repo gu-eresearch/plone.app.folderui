@@ -5,10 +5,14 @@ facets configuration.
 
 from zope.interface import implements
 from interfaces import ( IFacetPathRules, IFacetSettings, IFacetSpecification,
-    IFilterSpecification, FACETS_ALL, )
-from zope.component import getGlobalSiteManager
+    IFilterSpecification, FACETS_ALL, is_daterange )
+from zope.component import getGlobalSiteManager, queryUtility
 from zope.schema import getFieldsInOrder, getFieldNames
 from zope.schema.fieldproperty import FieldProperty
+from zope.schema.interfaces import IVocabularyFactory
+from zope.schema.vocabulary import SimpleVocabulary
+import vocab #triggers utility registration, TODO: move reg. to ZCML
+from daterange import RANGES
 
 
 class BaseFilterSpecification(object):
@@ -21,6 +25,28 @@ class BaseFilterSpecification(object):
     
     def __init__(self):
         pass
+    
+    @property
+    def token(self):
+        if not self.values and self.name:
+            return str(self.name)
+        return repr(self.values)
+    
+    @property
+    def value(self):
+        if not self.values:
+            return self.name
+        return self.values
+    
+    def __call__(self):
+        raise NotImplementedError('todo') #TODO: make IQueryFilter from spec
+
+
+class DateFilterSpecification(BaseFilterSpecification):
+    """filter where terms are date range factories"""
+    
+    def __call__(self):
+        raise NotImplementedError('todo') #TODO: make IQueryFilter from spec
 
 
 class BaseFacetSpecification(object):
@@ -33,12 +59,22 @@ class BaseFacetSpecification(object):
     
     def __init__(self, name, **kwargs):
         self.filters = []
+        self.name = unicode(name)
         for k,v in kwargs.items():
             if k in getFieldNames(IFacetSpecification):
                 setattr(self, k, v)
     
-    def __call__(self):
-        raise NotImplementedError('todo') #TODO
+    def __call__(self, context):
+        static = SimpleVocabulary(terms=self.filters) #static vocab via filters
+        if self.query_vocabulary:
+            dynamic = queryUtility(IVocabularyFactory, name=str(self.name))
+            if dynamic:
+                v = dynamic(context) #dynamic vocab, sourced from named utility
+                if self.filters:
+                     #hybrid static/dynamic vocab
+                    return SimpleVocabulary(terms=list(v)+list(static))
+                return SimpleVocabulary(terms=v)
+        return SimpleVocabulary(terms=self.filters) #static vocab via filters
 
 
 class BaseSettings(object):
@@ -153,13 +189,48 @@ class BasePathRules(object):
         return tuple(result) #note: facet order not determined here
 
 
-FACETS = BaseSettings(
-    BaseFacetSpecification(
-        name=u'owner',
-        title=u'Owner',
-        description=u'Owner of content',
+## factories for config
+def facets(*args):
+    return BaseSettings(*args)
+
+
+def facet(**kwargs):
+    if 'name' not in kwargs:
+        raise ValueError('name argument is required')
+    return BaseFacetSpecification(**kwargs)
+
+
+def daterange_facet(**kwargs):
+    kw = dict(kwargs.items())
+    if 'ranges' in kw:
+        ranges = kwargs.get('ranges',{})
+        del(kw['ranges'])
+    f = facet(**kw)
+    f.filters = []
+    for k,v in ranges.items():
+        if not is_daterange(v):
+            raise ValueError('Value is not date range or range factory.')
+        df = BaseFilterSpecification()
+        df.title = df.name = unicode(k)
+        df.values = (v,)
+        f.filters.append(df)
+    return f
+
+
+FACETS = facets(
+    facet(
+        name=u'creator',
+        title=u'Creator',
+        description=u'Content created by',
         multiset=False,
         filters=[],
         query_vocabulary=True, ),
+    daterange_facet(
+        name=u'Modified',
+        title=u'Modification date',
+        description=u'Date item was modified.',
+        multiset=True,
+        ranges=RANGES,
+        query_vocabulary=False, ),
 )
 
