@@ -1,0 +1,29 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:metal="http://xml.zope.org/namespaces/metal"
+      xmlns:tal="http://xml.zope.org/namespaces/tal"
+      xmlns:i18n="http://xml.zope.org/namespaces/i18n"
+      metal:use-macro="context/@@standard_macros/page">
+ <head>
+ </head>
+ <body>
+    <div metal:fill-slot="body">
+        <div class="folder_listing">
+        <h3>listings go here</h3>
+        <p>item</p>
+        <p>item</p>
+        <p>item</p>
+        <p>...</p>
+        </div>
+        <div class="facet_navigation">
+            <tal:block repeat="facet view/facets">
+                <div class="facet">
+                    <h3 tal:content="facet/title">title</h3>
+                    <div class="filters">
+                        <p>Filters go here</p>
+                    </div>
+                </div>
+            </tal:block>
+        </div>
+    </div>
+ </body>
+</html>
