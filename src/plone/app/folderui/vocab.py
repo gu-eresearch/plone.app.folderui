@@ -39,7 +39,7 @@ class UniqueValuesFactory(object):
         if term_factory is None:
             if title:
                 return SimpleTerm(value=value, title=title)
-            return SimpleTerm(t)
+            return SimpleTerm(value)
         t = term_factory()
         t.name = value
         if title:
