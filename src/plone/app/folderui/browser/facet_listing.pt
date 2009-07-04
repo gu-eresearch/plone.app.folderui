@@ -18,9 +18,9 @@
             <tal:block repeat="facet view/facets">
                 <div class="facet">
                     <h3 tal:content="facet/title">title</h3>
-                    <div class="filters">
-                        <p>Filters go here</p>
-                    </div>
+                    <ul class="filters" tal:repeat="filter facet/filters">
+                        <li><a href="#" tal:content="filter/title">filter title</a></li>
+                    </ul>
                 </div>
             </tal:block>
         </div>
