@@ -63,11 +63,12 @@ class BaseTestCase(ptc.PloneTestCase):
         self.workflow = getToolByName(self.portal, 'portal_workflow')
         self.membership = getToolByName(self.portal, 'portal_membership')
         self.loginAsPortalOwner()
+        #remove all content so we don't get it in catalog queries.
         content_ids = self.portal.contentIds()
         self.portal.manage_delObjects(content_ids)
         self.catalog.refreshCatalog(clear=1)
 
-    def addMember(self, username, fullname="", roles=('Manager',),
+    def add_member(self, username, fullname="", roles=('Manager',),
                   last_login_time=None):
         self.membership.addMember(username, 'secret', roles, [])
         member = self.membership.getMemberById(username)

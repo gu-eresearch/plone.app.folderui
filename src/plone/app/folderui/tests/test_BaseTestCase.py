@@ -35,7 +35,7 @@ class TestAddContent(BaseTestCase):
         self.assertTrue(wf_state['review_state'] == 'published')
         
     def test_owner(self):
-        self.addMember('testuser', '_')
+        self.add_member('testuser', '_')
         content = self.add_content('testcontent',
                          username='testuser')
         self.assertTrue(content.Creator() == 'testuser')
