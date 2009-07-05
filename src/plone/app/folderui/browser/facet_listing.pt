@@ -9,15 +9,57 @@
     <div metal:fill-slot="body">
         <div class="folder_listing">
             <h3>listings go here</h3>
-            <div class="item_listing" tal:repeat="listing view/listings">
-                <p><a href="" tal:attributes="href listing/getURL">
-                <span tal:condition="listing/Title" tal:content="listing/Title">title for item</span>
-                <span tal:condition="python: not listing.Title" tal:content="listing/getId">id</span>
-                </a></p>
-                <p>By <span tal:content="listing/Creator">creator</span>
-                -- last modified <span tal:content="listing/modified">mod</span></p>
-                <p tal:condition="listing/Description" tal:content="listing/Description">description for item</p>
-                <hr />
+            <div class="item_listing"
+                 tal:repeat="item view/listings">
+                <tal:block define="item_id item/getId|item/id;
+                                   item_title item/Title;
+                                   item_icon python:plone_view.getIcon(item);
+                                   item_type item/portal_type;
+                                   item_type_title item/Type;
+                                   item_start item/start/ISO|item/StartDate|nothing;
+                                   item_end item/end/ISO|item/EndDate|nothing;
+                    ">
+                    <p>
+                        <a href="" tal:attributes="href item/getURL">
+                        <img tal:replace="structure item_icon/html_tag" />
+                        <span tal:condition="item_title" tal:content="item_title">title for item</span>
+                        <span tal:condition="python: not item_title" tal:content="item_id">id</span>
+                        </a>
+                    </p>
+                    <p>By <span tal:content="item/Creator">creator</span>
+                    <tal:block condition="python: item_type not in ('Event','vevent')">
+                        -- last modified <span tal:content="item/modified">mod</span>
+                    </tal:block>
+                            <span tal:condition="python: item_type == 'Event' and item.location"
+                                  i18n:translate="label_event_byline">
+                                (<span tal:content="string:${item/location}"
+                                       class="location"
+                                       i18n:name="location">Oslo</span>, from
+                                 <abbr class="dtstart"
+                                       tal:attributes="title python:item_start"
+                                       tal:content="python:toLocalizedTime(item_start,long_format=1)"
+                                       i18n:name="start">from date</abbr> to
+                                 <abbr class="dtend"
+                                       tal:attributes="title python:item_end"
+                                       tal:content="python:toLocalizedTime(item_end,long_format=1)"
+                                       i18n:name="end">to date</abbr>)
+                            </span>
+                            <span tal:condition="python: item_type == 'Event' and not item.location"
+                                  i18n:translate="label_event_byline_without_location">
+                                (from
+                                 <abbr class="dtstart"
+                                       tal:attributes="title python:item_start"
+                                       tal:content="python:toLocalizedTime(item_start,long_format=1)"
+                                       i18n:name="start">from date</abbr> to
+                                 <abbr class="dtend"
+                                       tal:attributes="title python:item_end"
+                                       tal:content="python:toLocalizedTime(item_end,long_format=1)"
+                                       i18n:name="end">to date</abbr>)
+                            </span>
+                    </p>
+                    <p tal:condition="item/Description" tal:content="item/Description">description for item</p>
+                    <hr />
+                </tal:block>
             </div>
         </div>
         <div class="facet_navigation">
