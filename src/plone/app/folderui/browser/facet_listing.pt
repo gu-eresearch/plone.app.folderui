@@ -8,11 +8,17 @@
  <body>
     <div metal:fill-slot="body">
         <div class="folder_listing">
-        <h3>listings go here</h3>
-        <p>item</p>
-        <p>item</p>
-        <p>item</p>
-        <p>...</p>
+            <h3>listings go here</h3>
+            <div class="item_listing" tal:repeat="listing view/listings">
+                <p><a href="" tal:attributes="href listing/getURL">
+                <span tal:condition="listing/Title" tal:content="listing/Title">title for item</span>
+                <span tal:condition="python: not listing.Title" tal:content="listing/getId">id</span>
+                </a></p>
+                <p>By <span tal:content="listing/Creator">creator</span>
+                -- last modified <span tal:content="listing/modified">mod</span></p>
+                <p tal:condition="listing/Description" tal:content="listing/Description">description for item</p>
+                <hr />
+            </div>
         </div>
         <div class="facet_navigation">
             <tal:block repeat="facet view/facets">

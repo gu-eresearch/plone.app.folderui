@@ -119,6 +119,6 @@ class AdvancedQueryRunner(object):
         query = mkaquery(composed, extra=pathq)
         res = catalog.evalAdvancedQuery(query)
         #TODO: support sorting!
-        return IterableCatalogResult(res, catalog)
+        return IterableCatalogResults(res, catalog)
 
 

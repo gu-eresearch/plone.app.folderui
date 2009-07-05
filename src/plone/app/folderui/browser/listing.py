@@ -1,5 +1,8 @@
 from Products.Five import BrowserView
 from plone.app.folderui.defaults import FACETS
+from plone.app.folderui.query import ComposedQuery
+from plone.app.folderui.catalog import AdvancedQueryRunner
+
 
 class FacetViewInfo(object):
     """object containing render-ready facet info"""
@@ -22,4 +25,11 @@ class FacetListing(BrowserView):
             filters = v(self.context) #call to get filter vocab
             result.append(FacetViewInfo(k,v,filters))
         return result
+    
+    def listings(self, **kwargs):
+        q = ComposedQuery()
+        runner = AdvancedQueryRunner(self.context)
+        #runner = queryUtility(IQueryRunner) #TODO: decouple later
+        result_map = runner(q)
+        return result_map.values() #LazyMap of brains
 
