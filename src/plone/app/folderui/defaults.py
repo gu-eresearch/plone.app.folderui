@@ -42,13 +42,6 @@ class BaseFilterSpecification(object):
         raise NotImplementedError('todo') #TODO: make IQueryFilter from spec
 
 
-class DateFilterSpecification(BaseFilterSpecification):
-    """filter where terms are date range factories"""
-    
-    def __call__(self):
-        raise NotImplementedError('todo') #TODO: make IQueryFilter from spec
-
-
 class BaseFacetSpecification(object):
     """Base (transient) facet specification object"""
     
