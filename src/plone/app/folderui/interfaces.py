@@ -17,7 +17,7 @@ FACETS_ALL = 1 #used to include/exclude all facets in configuration
 class IQueryFilter(Interface):
     """implementation-neutral query fragment to be applied to a single index"""
     index = TextLine(title=u'Index name or identifier', required=True)
-    terms = Tuple(value_type=Object(schema=Interface), default=())
+    values = Tuple(value_type=Object(schema=Interface), default=())
     query_range = Choice(vocabulary=mkvocab(('min','max','minmax',None)),
         default=None,
         required=False, )

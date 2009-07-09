@@ -5,14 +5,16 @@ facets configuration.
 
 from zope.interface import implements
 from interfaces import ( IFacetPathRules, IFacetSettings, IFacetSpecification,
-    IFilterSpecification, FACETS_ALL, is_daterange )
-from zope.component import getGlobalSiteManager, queryUtility
+    IQueryFilter, IFilterSpecification, FACETS_ALL, is_daterange )
+from zope.component import getGlobalSiteManager, queryUtility, IFactory
 from zope.schema import getFieldsInOrder, getFieldNames
 from zope.schema.fieldproperty import FieldProperty
 from zope.schema.interfaces import IVocabularyFactory
 from zope.schema.vocabulary import SimpleVocabulary
 import vocab #triggers utility registration, TODO: move reg. to ZCML
 from daterange import RANGES
+from utils import dottedname
+import query #trigger default factory registration; TODO: move reg. to ZCML
 
 
 class BaseFilterSpecification(object):
@@ -39,7 +41,13 @@ class BaseFilterSpecification(object):
         return self.values
     
     def __call__(self):
-        raise NotImplementedError('todo') #TODO: make IQueryFilter from spec
+        factory = queryUtility(IFactory, dottedname(IQueryFilter))
+        qf = factory()
+        qf.index = self.index
+        qf.values = self.values
+        qf.query_range = self.query_range
+        qf.negated = self.negated
+        return qf
 
 
 class BaseFacetSpecification(object):
