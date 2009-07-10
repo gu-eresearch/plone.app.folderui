@@ -21,26 +21,30 @@ def aquery_filter(qf, filter=False):
     given qf object providing IQueryFilter, generate, return AdavancedQuery
     object; if filter=True assuming incremental filtering.
     """
+    if type(qf.value) in (list,set,tuple):
+        terms = qf.value
+    else:
+        terms = (qf.value,)
     q = None
     if not IQueryFilter.providedBy(qf):
         raise ValueError('abstract query must provide IQueryFilter interface')
     index = str(qf.index)
-    if query_range is not None:
+    if qf.query_range is not None:
         #Le, Ge, or Between query
-        if query_range == 'min':
-            q = AdvancedQuery.Ge(index, value=qf.terms[0], filter=filter)
-        if query_range == 'max':
-            q = AdvancedQuery.Le(index, value=qf.terms[0], filter=filter)
-        elif len(qf.terms)>=2:
+        if qf.query_range == 'min':
+            q = AdvancedQuery.Ge(index, value=terms[0], filter=filter)
+        if qf.query_range == 'max':
+            q = AdvancedQuery.Le(index, value=terms[0], filter=filter)
+        elif len(terms)>=2:
             q = AdvancedQuery.Between(index,
-                qf.terms[0], #low
-                qf.terms[1], #
+                terms[0], #low
+                terms[1], #
                 filter=filter)
         else:
             raise RuntimeError('unable to create range query')
     else:
         #no range: Eq query, use first term in qf.terms, ignore others
-        q = AdvancedQuery.Eq(index, value=qf.terms[0], filter=filter)
+        q = AdvancedQuery.Eq(index, terms[0], filter=filter)
     if qf.negated:
         return ~q #negated == q.__invert__()
     return q
