@@ -17,7 +17,7 @@ FACETS_ALL = 1 #used to include/exclude all facets in configuration
 class IQueryFilter(Interface):
     """implementation-neutral query fragment to be applied to a single index"""
     index = TextLine(title=u'Index name or identifier', required=True)
-    values = Tuple(value_type=Object(schema=Interface), default=())
+    value = Object(title=u'Search value(s)', schema=Interface, required=False)
     query_range = Choice(vocabulary=mkvocab(('min','max','minmax',None)),
         default=None,
         required=False, )
@@ -77,9 +77,7 @@ class IFilterSpecification(ITitledTokenizedTerm):
     configuration.
     """
     token = Attribute('Token',
-        '7-bit read-only str for self.name or self.terms')
-    value = Attribute('Term value',
-        'read-only property alias to self.terms')
+        '7-bit read-only str for self.name or self.value')
     
     name = TextLine(title=u'Filter name',
         required=True)  #should be unique within facet
@@ -90,12 +88,10 @@ class IFilterSpecification(ITitledTokenizedTerm):
         description=u'Allow NOT operator on filter.',
         default=True)
     index = TextLine(title=u'Index name or identifier', required=True)
-    values = Tuple(title=u'Search values',
-        value_type=Object(schema=Interface),
-        default=())
+    value = Object(title=u'Search value(s)', schema=Interface, required=False)
     query_range = Choice(title=u'Query range',
-        vocabulary=mkvocab(('min','max','minmax')),
-        default='minmax')
+        vocabulary=mkvocab(('min','max','minmax',None)),
+        default=None)
     negated = Bool(title=u'Negate query?', default=False)
     
     def __call__():

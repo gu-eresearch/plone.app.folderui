@@ -30,21 +30,15 @@ class BaseFilterSpecification(object):
     
     @property
     def token(self):
-        if not self.values and self.name:
+        if not self.value and self.name:
             return str(self.name)
-        return repr(self.values)
-    
-    @property
-    def value(self):
-        if not self.values:
-            return self.name
-        return self.values
+        return repr(self.value)
     
     def __call__(self):
         factory = queryUtility(IFactory, dottedname(IQueryFilter))
         qf = factory()
         qf.index = self.index
-        qf.values = self.values
+        qf.value = self.value
         qf.query_range = self.query_range
         qf.negated = self.negated
         return qf
@@ -213,7 +207,7 @@ def daterange_facet(**kwargs):
             raise ValueError('Value is not date range or range factory.')
         df = BaseFilterSpecification()
         df.title = df.name = unicode(k)
-        df.values = (v,)
+        df.value = v
         f.filters.append(df)
     return f
 
@@ -234,4 +228,13 @@ FACETS = facets(
         ranges=RANGES,
         query_vocabulary=False, ),
 )
+
+
+gsm = getGlobalSiteManager()
+gsm.registerUtility(BaseFilterSpecification,
+    IFactory,
+    name=dottedname(IFilterSpecification))
+
+
+gsm.registerUtility(FACETS, IFacetSettings)
 

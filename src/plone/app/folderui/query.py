@@ -26,7 +26,7 @@ class ComposedQuery(object):
         if IComposedQuery.providedBy(other):
             new_composition.filters += other.filters
         elif IQueryFilter.providedBy(other):
-            new_composition.filters += other
+            new_composition.filters.append(other)
         else:
             raise ValueError('cannot add: other is of unknown component type.')
         return new_composition
@@ -39,9 +39,9 @@ class QueryFilter(object):
     for _fieldname, _field in getFieldsInOrder(IQueryFilter):
         locals()[_fieldname] = FieldProperty(_field)
     
-    def __init__(self, index=u'', terms=(), query_range=None, neg=False):
+    def __init__(self, index=u'', value=None, query_range=None, neg=False):
         self.index = unicode(index)
-        self.terms = tuple([t for t in terms if t is not None])
+        self.value = value
         self.query_range = query_range
         self.negated = bool(neg)
     
@@ -99,7 +99,7 @@ def date_range_filter(dr):
     factory = queryUtility(IFactory, dottedname(IQueryFilter))
     if factory is None:
         return ComponentLookupError('cannot find factory for query filter')
-    return factory(terms=(dr.start, dr.end), query_range=dr.query_range)
+    return factory(value=(dr.start, dr.end), query_range=dr.query_range)
 
 
 # register default factories on import of this module
