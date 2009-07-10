@@ -65,9 +65,11 @@
         <div class="facet_navigation">
             <tal:block repeat="facet view/facets">
                 <div class="facet">
-                    <h3 tal:content="facet/title">title</h3>
+                    <h3 tal:content="facet/name">title</h3>
                     <ul class="filters" tal:repeat="filter facet/filters">
-                        <li><a href="#" tal:content="filter/title">filter title</a></li>
+                        <li><a href="#" 
+                                tal:attributes="href python:view.filter_link(facet, filter)"
+                                tal:content="filter/title">filter title</a></li>
                     </ul>
                 </div>
             </tal:block>
