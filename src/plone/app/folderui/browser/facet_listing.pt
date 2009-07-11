@@ -67,17 +67,21 @@
                 </tal:block>
             </div>
         </div>
-        <div class="facet_navigation">
+        <div class="facets">
+            <h3>Filter results</h3>
+            <!-- <p>Click filter title to show or hide</p> -->
             <tal:block repeat="facet view/facets">
-                <div class="facet">
+                <div class="searchfilter">
                     <h3 tal:content="facet/name">title</h3>
-                    <ul class="filters" tal:repeat="filter facet/filters">
-                        <li><a href="#" 
+                    <ul class="facetmenu" tal:repeat="filter facet/filters">
+                        <li><a class="filterchoice" href="#" 
                                 tal:attributes="href python:view.filter_link(facet, filter)"
                                 tal:content="filter/title">filter title</a></li>
                     </ul>
                 </div>
             </tal:block>
+        </div>
+        <div class="listing_bottom_navigation">
         </div>
     </div>
  </body>

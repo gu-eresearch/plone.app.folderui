@@ -3,9 +3,19 @@
     border:1px solid #aaa;
 }
 
+div.folder_listing {
+    float:left;
+    width:70%;
+}
+
 div.facets {
     width:20.4em;
     border 1px solid #ddd;
+    float:right;
+}
+
+div.listing_bottom_navigation {
+    clear:both;
 }
 
 div.searchfilter {
