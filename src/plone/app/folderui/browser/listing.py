@@ -84,6 +84,8 @@ class FacetListing(BrowserView):
         base = self.facet_state_querystring()
         k = 'facet.%s' % facet.name
         v = filter.name
-        qs = '%s&%s=%s' % (base, k, v)
+        qs = '%s=%s' % (k,v)
+        if base:
+            qs = '%s&%s' % (base, qs)
         return 'facet_listing?%s' % qs
 
