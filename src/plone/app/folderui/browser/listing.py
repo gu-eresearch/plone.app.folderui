@@ -56,6 +56,9 @@ class FacetListing(BrowserView):
             [(k.replace('facet.',''),v) for k,v in req.items() 
                 if k.startswith('facet.')])
     
+    def applied_filters(self):
+        return self._state.values() #list of tuples of (facet, filter)
+    
     def load_filter_state(self):
         self._state = {}
         all_facets = queryUtility(IFacetSettings)
@@ -82,10 +85,28 @@ class FacetListing(BrowserView):
         returning a complete filter link for facet+filter.
         """
         base = self.facet_state_querystring()
-        k = 'facet.%s' % facet.name
-        v = filter.name
+        k = urllib.quote('facet.%s' % facet.name)
+        v = urllib.quote(filter.name)
         qs = '%s=%s' % (k,v)
         if base:
             qs = '%s&%s' % (base, qs)
         return 'facet_listing?%s' % qs
+    
+    def strike_filter(self, facet, filter):
+        """
+        Make a URL that includes all filter state in query string EXCEPT
+        the facet/filter combination passed, with the effect returning a
+        link that removes the filter.
+        """
+        qs = self.facet_state_querystring()
+        k = urllib.quote('facet.%s' % facet.name)
+        v = urllib.quote(filter.name)
+        rem = '%s=%s' % (k,v)
+        ## remove current filter and normalize remaining querystring:
+        qs = qs.replace(rem, '')
+        qs = qs.replace('?&','?')
+        qs = qs.replace('&&', '&')
+        if qs.endswith('&'):
+            qs = qs[:-1]
+        return qs
 

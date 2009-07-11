@@ -14,6 +14,17 @@
     <div metal:fill-slot="body">
         <div class="folder_listing">
             <h3 tal:content="view/context/Title|view/context/id">Title</h3>
+            <div class="filter_summary" tal:condition="view/applied_filters">
+                <h3>Applied search filters</h3>
+                <div tal:repeat="pair view/applied_filters">
+                 <tal:block define="facet python:pair[0]; filter python:pair[1];">
+                     <span class="facetname" tal:content="facet/title"></span>: <span class="filtername" tal:content="filter/title"></span>
+                    <tal:block define="strike python:view.strike_filter(facet, filter)">
+                      <a href="" class="strike" tal:attributes="href string:./facet_listing?${strike}">(remove)</a>
+                    </tal:block>
+                 </tal:block>
+                </div>
+            </div>
             <div class="item_listing"
                  tal:repeat="item view/listings">
                 <tal:block define="item_id item/getId|item/id;
