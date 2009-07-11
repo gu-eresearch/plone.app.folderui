@@ -1,5 +1,37 @@
 
 .facet_navigation {
-  border:1px solid #aaa;
+    border:1px solid #aaa;
+}
+
+div.facets {
+    width:20.4em;
+    border 1px solid #ddd;
+}
+
+div.searchfilter {
+    width:20em;
+    border:1px solid #ddd;
+    font-family:Liberation Sans,Arial,Verdana;
+}
+
+div.searchfilter h3 { background-color:#666;
+    color:#fff;
+    font-size:1.4em;
+}
+
+div.searchfilter ul {
+    padding:0.3em;
+}
+
+div.searchfilter ul li {
+    list-style-type:none;
+    margin:0;
+    clear:both;
+}
+
+div.searchfilter span.act {
+    display:block;
+    float:right;
+    margin-top:-1.3em;
 }
 
