@@ -3,6 +3,42 @@
     border:1px solid #aaa;
 }
 
+div.filter_summary {
+    border:1px solid #999;
+    background-color:#eee;
+}
+
+div.filter_summary a.strike {
+    display:inline-block;
+    margin-bottom:-3px;
+    padding: 16px 0 0 0;
+    overflow: hidden;
+    background-image: url(&dtml-portal_url;/delete_icon.gif);
+    background-repeat: no-repeat;
+    
+    height: 0px !important;
+    height /**/:17px;
+}
+
+div.filter_summary h3 {
+    color:#999;
+    font-size:85%;
+    margin:0 0 0.2em 0.2em;
+}
+
+div.filter_summary div {
+    margin:0 0 0.2em 0.2em;
+}
+
+div.filter_summary span.facetname {
+    color:#666;
+}
+
+div.filter_summary span.filtername {
+    font-weight:bold;
+    font-size:110%;
+}
+
 div.folder_listing {
     float:left;
     width:70%;
