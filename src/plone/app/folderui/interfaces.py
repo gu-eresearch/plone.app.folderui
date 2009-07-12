@@ -102,6 +102,8 @@ class IFacetSpecification(IVocabularyFactory):
     """facet is grouping of search filters"""
     name = TextLine(required=True) #should be unique for all facets
     title = TextLine(required=True)
+    index = TextLine(required=False,
+        default=None) #if None, use name as index name
     description = Text(required=False)
     multiset = Bool(title=u'Multiset?',
         description=u'Allows multiple selections / result sets for one facet.',
