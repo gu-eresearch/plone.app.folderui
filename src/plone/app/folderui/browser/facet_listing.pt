@@ -8,11 +8,14 @@
      <style type="text/css" media="all"
         tal:content="string:@import url(${portal_path}/folderui.css);">
      </style>
+     <script type="text/javascript" src="" tal:attributes="src string:${portal_path}/folderui.js;"></script>
     </metal:block>
  </head>
  <body>
     <div metal:fill-slot="body">
-        <div class="folder_listing">
+        <div class="folder_listing"
+            tal:define="use_view_action view/context/site_properties/typesUseViewActionInListings|python:();"
+            >
             <h3 tal:content="view/context/Title|view/context/id">Title</h3>
             <div class="filter_summary" tal:condition="view/applied_filters">
                 <h3>Applied search filters</h3>
@@ -32,11 +35,12 @@
                                    item_icon python:plone_view.getIcon(item);
                                    item_type item/portal_type;
                                    item_type_title item/Type;
+                                   item_url item/getURL;
                                    item_start item/start/ISO|item/StartDate|nothing;
                                    item_end item/end/ISO|item/EndDate|nothing;
                     ">
                     <p>
-                        <a href="" tal:attributes="href item/getURL">
+                        <a href="" tal:attributes="href python:{True:item_url+'/view',False:item_url}[(item_type in use_view_action)];">
                         <img tal:replace="structure item_icon/html_tag" />
                         <span tal:condition="item_title" tal:content="item_title">title for item</span>
                         <span tal:condition="python: not item_title" tal:content="item_id">id</span>
@@ -81,10 +85,11 @@
         <div class="facets">
             <h3>Filter results</h3>
             <!-- <p>Click filter title to show or hide</p> -->
+            <p class="instructions">Click a filter below to limit listings; click headings to show/hide filter groups.</p>
             <tal:block repeat="facet view/facets">
                 <div class="searchfilter">
-                    <h3 tal:content="facet/name">title</h3>
-                    <ul class="facetmenu" tal:repeat="filter facet/filters">
+                    <h3 tal:content="facet/title">title</h3>
+                    <ul class="facetmenu" tal:repeat="filter python:facet(view.context)">
                         <li><a class="filterchoice" href="#" 
                                 tal:attributes="href python:view.filter_link(facet, filter)"
                                 tal:content="filter/title">filter title</a></li>

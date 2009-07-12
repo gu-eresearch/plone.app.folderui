@@ -8,14 +8,6 @@ from plone.app.folderui.query import ComposedQuery
 from plone.app.folderui.catalog import AdvancedQueryRunner
 
 
-class FacetViewInfo(object):
-    """object containing render-ready facet info"""
-    def __init__(self, name, spec, filters):
-        self.name = name
-        self.spec = spec
-        self.filters = filters
-
-
 class FacetListing(BrowserView):
     
     def __init__(self, context, request):
@@ -28,11 +20,7 @@ class FacetListing(BrowserView):
         facets = queryUtility(IFacetSettings)
         if facets is None:
             return []
-        result = []
-        for k,v in facets.items():
-            filters = v(self.context) #call to get filter vocab
-            result.append(FacetViewInfo(k,v,filters))
-        return result
+        return facets.values()
     
     def listings(self, **kwargs):
         #q = ComposedQuery()
@@ -70,6 +58,9 @@ class FacetListing(BrowserView):
                 if filter_name in vocabulary:
                     filter_spec = vocabulary.getTerm(filter_name)
                     self._state[facet_name] = (facet, filter_spec)
+                elif str(filter_name) in vocabulary.by_token:
+                    filter_spec = vocabulary.getTermByToken(str(filter_name))
+                    self._state[facet_name] = (facet, filter_spec)
     
     def facet_state_querystring(self):
         """make base querystring from current facet state"""
@@ -99,9 +90,7 @@ class FacetListing(BrowserView):
         link that removes the filter.
         """
         qs = self.facet_state_querystring()
-        k = urllib.quote('facet.%s' % facet.name)
-        v = urllib.quote(filter.name)
-        rem = '%s=%s' % (k,v)
+        rem = urllib.urlencode({('facet.%s' % facet.name) : filter.name})
         ## remove current filter and normalize remaining querystring:
         qs = qs.replace(rem, '')
         qs = qs.replace('?&','?')
