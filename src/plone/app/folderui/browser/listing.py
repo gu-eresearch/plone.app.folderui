@@ -2,6 +2,8 @@ import urllib
 
 from zope.component import queryUtility, IFactory, ComponentLookupError
 from Products.Five import BrowserView
+from Products.CMFPlone import Batch
+
 from plone.app.folderui import defaults #triggers registration: TODO: move reg.
 from plone.app.folderui.interfaces import IFacetSettings, IFilterSpecification
 from plone.app.folderui.query import ComposedQuery
@@ -23,13 +25,18 @@ class FacetListing(BrowserView):
             return []
         return facets.values()
     
-    def listings(self, **kwargs):
-        #q = ComposedQuery()
+    def listings(self):
         q = self.compose_from_query_state()
         runner = AdvancedQueryRunner(self.context)
         #runner = queryUtility(IQueryRunner) #TODO: decouple later
         result_map = runner(q)
         return result_map.values() #LazyMap of brains
+    
+    def batch(self, b_size=100):
+        b_size = int(self.request.get('b_size',b_size))
+        b_start = self.request.get('b_start', 0)
+        batch = Batch(self.listings(), b_size, b_start, orphan=0)
+        return batch
     
     def compose_from_query_state(self):
         """get composed query from current filter state"""

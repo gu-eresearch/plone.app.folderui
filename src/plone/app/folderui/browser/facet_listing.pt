@@ -14,7 +14,10 @@
  <body>
     <div metal:fill-slot="body">
         <div class="folder_listing"
-            tal:define="use_view_action view/context/site_properties/typesUseViewActionInListings|python:();"
+            tal:define="portal_path view/context/portal_url/getPortalPath;
+                        batch view/batch;
+                        batch_base_url string:${view/context/absolute_url}/facet_listing;
+                        use_view_action view/context/site_properties/typesUseViewActionInListings|python:();"
             >
             <h3 tal:content="view/context/Title|view/context/id">Title</h3>
             <div class="filter_summary" tal:condition="view/applied_filters">
@@ -31,8 +34,14 @@
                  </tal:block>
                 </div>
             </div>
+            <div class="result_summary">Viewing
+                <span tal:content="batch/start">1</span> to <span tal:content="python:batch.start+batch.length-1">20</span> of
+                <span tal:content="python:batch.sequence_length">85</span>
+                results.
+            </div>
+            <div metal:use-macro="view/context/batch_macros/macros/navigation" />
             <div class="item_listing"
-                 tal:repeat="item view/listings">
+                 tal:repeat="item batch">
                 <tal:block define="item_id item/getId|item/id;
                                    item_title item/Title;
                                    item_icon python:plone_view.getIcon(item);
@@ -84,6 +93,7 @@
                     <hr />
                 </tal:block>
             </div>
+            <div metal:use-macro="view/context/batch_macros/macros/navigation" />
         </div>
         <div class="facets">
             <h3>Filter results</h3>

@@ -9,6 +9,14 @@ div.facets {
     float:right;
 }
 
+div.result_summary {
+    margin-top:0.5em;
+    padding-left:1em; 
+    font-style:italic;
+    font-size:90%;
+    color:#666;
+}
+
 div.filter_summary {
     border:1px solid #999;
     background-color:#eee;
