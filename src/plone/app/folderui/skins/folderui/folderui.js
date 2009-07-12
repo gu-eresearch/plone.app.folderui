@@ -1,7 +1,7 @@
 
 function toggle_facet() {
     context = jQuery(this).parent();
-    jQuery('ul.facetmenu', context).toggle();
+    jQuery('.facetmenu', context).toggle();
 }
 
 function facet_helper() {

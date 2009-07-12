@@ -1,11 +1,12 @@
 import urllib
 
-from zope.component import queryUtility
+from zope.component import queryUtility, IFactory, ComponentLookupError
 from Products.Five import BrowserView
 from plone.app.folderui import defaults #triggers registration: TODO: move reg.
-from plone.app.folderui.interfaces import IFacetSettings
+from plone.app.folderui.interfaces import IFacetSettings, IFilterSpecification
 from plone.app.folderui.query import ComposedQuery
 from plone.app.folderui.catalog import AdvancedQueryRunner
+from plone.app.folderui.utils import dottedname
 
 
 class FacetListing(BrowserView):
@@ -54,6 +55,15 @@ class FacetListing(BrowserView):
         for facet_name, filter_name in facet_query.items():
             if facet_name in all_facets:
                 facet = all_facets[facet_name]
+                if not facet.use_vocabulary:
+                    # no vocab, so create filter spec on fly instead of lookup
+                    factory = queryUtility(IFactory,
+                        dottedname(IFilterSpecification))
+                    if factory is None:
+                        raise ComponentLookupError('no filter factory')
+                    filter_spec = factory(value=filter_name, index=facet.index)
+                    self._state[facet_name] = (facet, filter_spec)
+                    continue
                 vocabulary = facet(self.context)
                 if filter_name in vocabulary:
                     filter_spec = vocabulary.getTerm(filter_name)

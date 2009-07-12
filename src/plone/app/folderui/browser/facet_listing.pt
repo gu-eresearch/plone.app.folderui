@@ -21,7 +21,10 @@
                 <h3>Applied search filters</h3>
                 <div tal:repeat="pair view/applied_filters">
                  <tal:block define="facet python:pair[0]; filter python:pair[1];">
-                     <span class="facetname" tal:content="facet/title"></span>: <span class="filtername" tal:content="filter/title"></span>
+                     <span class="facetname" tal:content="string:${facet/title}:"></span>
+                     <span class="filtername" tal:condition="filter/title" tal:content="filter/title"></span>
+                     <span class="filtername" tal:condition="python: not filter.title and filter.name" tal:content="filter/name"></span>
+                     <span class="filtername" tal:condition="python: not filter.title and not filter.name" tal:content="filter/value"></span>
                     <tal:block define="strike python:view.strike_filter(facet, filter)">
                       <a href="" class="strike" tal:attributes="href string:./facet_listing?${strike}">(remove)</a>
                     </tal:block>
@@ -89,6 +92,19 @@
             <tal:block repeat="facet view/facets">
                 <div class="searchfilter">
                     <h3 tal:content="facet/title">title</h3>
+                    <div class="facetmenu" tal:condition="python: not facet.use_vocabulary">
+                        <form>
+                            <input type="text" name="facet.text" value="" />
+                            <tal:block repeat="pair view/applied_filters">
+                                <input type="hidden" name="" value=""
+                                    tal:condition="python:pair[0] != facet"
+                                    tal:attributes="name python:'facet.'+pair[0].name;
+                                                    value python: pair[1].name or pair[1].value;" />
+                            </tal:block>
+                            <br />
+                            <input type="submit" />
+                        </form>
+                    </div>
                     <ul class="facetmenu" tal:repeat="filter python:facet(view.context)">
                         <li><a class="filterchoice" href="#" 
                                 tal:attributes="href python:view.filter_link(facet, filter)"

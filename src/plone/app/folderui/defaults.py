@@ -26,8 +26,13 @@ class BaseFilterSpecification(object):
     for _fieldname, _field in getFieldsInOrder(IFilterSpecification):
         locals()[_fieldname] = FieldProperty(_field)
     
-    def __init__(self):
-        pass
+    def __init__(self, **kwargs):
+        for k,v in kwargs.items():
+            if k=='value' and isinstance(v, str):
+                self.value = v.decode('utf=8')
+                continue
+            elif k in getFieldNames(IFilterSpecification):
+                setattr(self, k, v)
     
     @property
     def token(self):
@@ -231,6 +236,15 @@ def daterange_facet(**kwargs):
 
 
 FACETS = facets(
+    facet(
+        name=u'text',
+        title=u'Text search',
+        description=u'Searchable full text.',
+        index=u'SearchableText',
+        multiset=True,
+        filters=[],
+        query_vocabulary=False,
+        use_vocabulary=False, ),
     facet(
         name=u'creator',
         title=u'Creator',
