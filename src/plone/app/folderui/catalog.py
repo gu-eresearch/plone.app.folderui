@@ -32,9 +32,9 @@ def aquery_filter(qf, filter=False):
     if qf.query_range is not None:
         #Le, Ge, or Between query
         if qf.query_range == 'min':
-            q = AdvancedQuery.Ge(index, value=terms[0], filter=filter)
+            q = AdvancedQuery.Ge(index, terms[0], filter=filter)
         if qf.query_range == 'max':
-            q = AdvancedQuery.Le(index, value=terms[0], filter=filter)
+            q = AdvancedQuery.Le(index, terms[0], filter=filter)
         elif len(terms)>=2:
             q = AdvancedQuery.Between(index,
                 terms[0], #low
