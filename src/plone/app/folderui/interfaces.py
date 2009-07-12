@@ -118,6 +118,11 @@ class IFacetSpecification(IVocabularyFactory):
         description=u'Query vocabulary factory for additional filters?',
         default=False,
         )
+    use_vocabulary = Bool(
+        title=u'Use vocabulary?',
+        description=u'Use controlled vocabulary, via filters or lookup?',
+        default=True, #if False, search value is query value, not filter name
+        )
     filters = List(
         value_type=Object(schema=IFilterSpecification),
         required=False)
