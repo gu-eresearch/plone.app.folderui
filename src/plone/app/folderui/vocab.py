@@ -10,9 +10,11 @@ from interfaces import ITitleLookup, IFilterSpecification
 from utils import dottedname
 
 
-titlecase = lambda v: v.title()
+titlecase = lambda v,context: v.title()
+capitalize = lambda v,context: v.capitalize()
 
 alsoProvides(titlecase, ITitleLookup)
+alsoProvides(capitalize, ITitleLookup)
 
 
 def member_fullname(value, context):
@@ -55,7 +57,7 @@ class UniqueValuesFactory(object):
         cat = getToolByName(context, 'portal_catalog')
         values = cat.uniqueValuesFor(self.index)
         for v in values:
-            title = None
+            title = v
             if self.titlefn is not None:
                 title = unicode(self.titlefn(v, context))
             terms.append(self._mkterm(v,title))
@@ -64,8 +66,18 @@ class UniqueValuesFactory(object):
 
 #some factories for indexes:
 all_creators_vfactory = UniqueValuesFactory('Creator', titlefn=member_fullname)
+all_categories_vfactory = UniqueValuesFactory('Subject', titlefn=capitalize)
+all_types_vfactory = UniqueValuesFactory('Type')
 
-
+#register vocabulary factories for use by facet specifications:
 gsm = getGlobalSiteManager()
-gsm.registerUtility(all_creators_vfactory, IVocabularyFactory, name='creator')
+gsm.registerUtility(all_creators_vfactory,
+    IVocabularyFactory,
+    name='creator')
+gsm.registerUtility(all_categories_vfactory,
+    IVocabularyFactory,
+    name='categories')
+gsm.registerUtility(all_types_vfactory,
+    IVocabularyFactory,
+    name='type')
 
