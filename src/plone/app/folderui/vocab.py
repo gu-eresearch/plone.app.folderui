@@ -41,9 +41,6 @@ class UniqueValuesFactory(object):
         term_factory = queryUtility(IFactory, dottedname(IFilterSpecification))
         if term_factory is None:
             raise ComponentLookupError('cannot find factory for filter term')
-            #if title:
-            #    return SimpleTerm(value=value, title=title)
-            #return SimpleTerm(value)
         t = term_factory()
         t.name = unicode(value)
         if title:
