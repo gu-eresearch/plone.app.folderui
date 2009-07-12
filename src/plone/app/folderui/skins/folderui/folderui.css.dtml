@@ -1,6 +1,12 @@
+div.folder_listing {
+    float:left;
+    width:65%;
+}
 
-.facet_navigation {
-    border:1px solid #aaa;
+div.facets {
+    width:32%;
+    border 1px solid #ddd;
+    float:right;
 }
 
 div.filter_summary {
@@ -39,40 +45,46 @@ div.filter_summary span.filtername {
     font-size:110%;
 }
 
-div.folder_listing {
-    float:left;
-    width:70%;
-}
-
-div.facets {
-    width:20.4em;
-    border 1px solid #ddd;
-    float:right;
-}
-
 div.listing_bottom_navigation {
     clear:both;
 }
 
 div.searchfilter {
-    width:20em;
     border:1px solid #ddd;
     font-family:Liberation Sans,Arial,Verdana;
 }
 
-div.searchfilter h3 { background-color:#666;
-    color:#fff;
-    font-size:1.4em;
+div.facets p.instructions {
+    font-style:italic;
+    font-size:90%;
+    font-family:Times New Roman,Serif;
 }
 
-div.searchfilter ul {
+div.searchfilter h3 { background-color:#666;
+    color:#fff;
+    font-size:125%;
+    font-weight:bold;
+    margin:0;
+    padding-left:0.2em;
+}
+
+div.searchfilter ul.facetmenu {
+    list-style:none;
     padding:0.3em;
 }
 
-div.searchfilter ul li {
+div.searchfilter ul.facetmenu li {
     list-style-type:none;
-    margin:0;
+    margin:0px;
+    margin-left:-1.2em;
+    padding:0px;
+    line-height:0.8em;
     clear:both;
+}
+
+div.searchfilter ul.facetmenu li a {
+    color:#009;
+    font-weight:bold;
 }
 
 div.searchfilter span.act {
