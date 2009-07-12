@@ -5,7 +5,8 @@ facets configuration.
 
 from zope.interface import implements
 from interfaces import ( IFacetPathRules, IFacetSettings, IFacetSpecification,
-    IQueryFilter, IFilterSpecification, FACETS_ALL, is_daterange )
+    IQueryFilter, IFilterSpecification, IDateRange, IDateRangeFactory,
+    FACETS_ALL, is_daterange, )
 from zope.component import getGlobalSiteManager, queryUtility, IFactory
 from zope.schema import getFieldsInOrder, getFieldNames
 from zope.schema.fieldproperty import FieldProperty
@@ -30,16 +31,24 @@ class BaseFilterSpecification(object):
     
     @property
     def token(self):
+        v = self.value
+        if IDateRangeFactory.providedBy(v) or IDateRange.providedBy(v):
+            return str(self.name)
         if not self.value and self.name:
             return str(self.name)
         return repr(self.value)
     
     def __call__(self):
-        factory = queryUtility(IFactory, dottedname(IQueryFilter))
-        qf = factory()
-        qf.index = self.index
-        qf.value = self.value
-        qf.query_range = self.query_range
+        v = self.value
+        if IDateRangeFactory.providedBy(v) or IDateRange.providedBy(v):
+            qf = query.date_range_filter(v)
+        else:
+            factory = queryUtility(IFactory, dottedname(IQueryFilter))
+            qf = factory()
+            qf.value = v
+            qf.query_range = self.query_range
+        if self.index:
+            qf.index = self.index
         qf.negated = self.negated
         return qf
 
@@ -59,12 +68,21 @@ class BaseFacetSpecification(object):
             if k in getFieldNames(IFacetSpecification):
                 setattr(self, k, v)
     
+    def _bind_index(self, seq, name):
+        """bind index name to filters"""
+        for filter_spec in seq:
+            filter_spec.index = unicode(name)
+    
     def __call__(self, context):
         static = SimpleVocabulary(terms=self.filters) #static vocab via filters
+        if self.index:
+            self._bind_index(static, self.index)
         if self.query_vocabulary:
             dynamic = queryUtility(IVocabularyFactory, name=str(self.name))
             if dynamic:
                 v = dynamic(context) #dynamic vocab, sourced from named utility
+                if self.index:
+                    self._bind_index(v, self.index)
                 if self.filters:
                      #hybrid static/dynamic vocab
                     return SimpleVocabulary(terms=list(v)+list(static))
@@ -220,9 +238,26 @@ FACETS = facets(
         multiset=False,
         filters=[],
         query_vocabulary=True, ),
+    facet(
+        name=u'type',
+        title=u'Content type',
+        index=u'Type',
+        description=u'Content type',
+        multiset=False,
+        filters=[],
+        query_vocabulary=True, ),
+    facet(
+        name=u'categories',
+        title=u'Categories',
+        index=u'Subject',
+        description=u'Categories/tags/subjects',
+        multiset=True,
+        filters=[],
+        query_vocabulary=True, ),
     daterange_facet(
         name=u'Modified',
         title=u'Modification date',
+        index=u'modified',
         description=u'Date item was modified.',
         multiset=True,
         ranges=RANGES,
