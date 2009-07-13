@@ -10,7 +10,7 @@ div.facets {
 }
 
 div.result_summary {
-    margin-top:0.5em;
+    margin:1em 0;
     padding-left:1em; 
     font-style:italic;
     font-size:90%;
@@ -57,6 +57,25 @@ div.listing_bottom_navigation {
     clear:both;
 }
 
+div.item_listing p.item_title {
+    font-weight:bold;
+    text-decoration:none;
+}
+
+div.item_listing p.item_title a.title_link {
+    text-decoration:none;
+    border:none;
+}
+
+div.item_listing p span.documentByline {
+    font-size:85%;
+    color:#999;
+}
+
+div.item_listing p.description {
+    font-size:90%;
+}
+
 div.searchfilter {
     border:1px solid #ddd;
     font-family:Liberation Sans,Arial,Verdana;
@@ -93,6 +112,7 @@ div.searchfilter ul.facetmenu li {
 div.searchfilter ul.facetmenu li a {
     color:#009;
     font-weight:bold;
+    border:none;
 }
 
 div.searchfilter span.act {

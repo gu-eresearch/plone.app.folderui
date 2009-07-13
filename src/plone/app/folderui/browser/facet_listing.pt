@@ -51,17 +51,18 @@
                                    item_start item/start/ISO|item/StartDate|nothing;
                                    item_end item/end/ISO|item/EndDate|nothing;
                     ">
-                    <p>
-                        <a href="" tal:attributes="href python:{True:item_url+'/view',False:item_url}[(item_type in use_view_action)];">
+                    <p class="item_title">
+                        <a class="title_link" href="" tal:attributes="href python:{True:item_url+'/view',False:item_url}[(item_type in use_view_action)];">
                         <img tal:replace="structure item_icon/html_tag" />
                         <span tal:condition="item_title" tal:content="item_title">title for item</span>
                         <span tal:condition="python: not item_title" tal:content="item_id">id</span>
                         </a>
                     </p>
-                    <p>By <span tal:content="item/Creator">creator</span>
-                    <tal:block condition="python: item_type not in ('Event','vevent')">
+                    <p>
+                      <span class="documentByline">By <span tal:content="item/Creator">creator</span>
+                      <tal:block condition="python: item_type not in ('Event','vevent')">
                         -- last modified <span tal:content="item/modified">mod</span>
-                    </tal:block>
+                      </tal:block>
                             <span tal:condition="python: item_type == 'Event' and item.location"
                                   i18n:translate="label_event_byline">
                                 (<span tal:content="string:${item/location}"
@@ -88,8 +89,9 @@
                                        tal:content="python:toLocalizedTime(item_end,long_format=1)"
                                        i18n:name="end">to date</abbr>)
                             </span>
+                      </span>
                     </p>
-                    <p tal:condition="item/Description" tal:content="item/Description">description for item</p>
+                    <p class="description" tal:condition="item/Description" tal:content="item/Description">description for item</p>
                     <hr />
                 </tal:block>
             </div>
