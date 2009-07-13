@@ -87,15 +87,20 @@ class FacetListing(BrowserView):
             query[k] = filter_spec.name or str(filter_spec.value)
         return urllib.urlencode(query)
     
+    def _link_fragment(self, facet, filter):
+        return urllib.urlencode({('facet.%s' % facet.name) : filter.name})
+    
     def filter_link(self, facet, filter):
         """
         Make URL for the intersection of current facet state and a filter
         returning a complete filter link for facet+filter.
         """
         base = self.facet_state_querystring()
-        k = urllib.quote('facet.%s' % facet.name)
-        v = urllib.quote(filter.name)
-        qs = '%s=%s' % (k,v)
+        if ('facet.%s' % facet.name) in base:
+            previous_filter = self._state[facet.name][1]
+            base = self.strike_filter(facet, previous_filter)
+            ## TODO: assumes only one link per facet is possible
+        qs = self._link_fragment(facet,filter)
         if base:
             qs = '%s&%s' % (base, qs)
         return 'facet_listing?%s' % qs
@@ -118,4 +123,8 @@ class FacetListing(BrowserView):
         if qs.endswith('&'):
             qs = qs[:-1]
         return qs
+    
+    def is_active_filter(self, facet, filter):
+        fragment = self._link_fragment(facet, filter)
+        return fragment in self.facet_state_querystring()
 

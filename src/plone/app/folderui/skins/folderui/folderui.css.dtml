@@ -102,11 +102,17 @@ div.searchfilter ul.facetmenu {
 
 div.searchfilter ul.facetmenu li {
     list-style-type:none;
-    margin:0px;
+    margin:0.3em;
     margin-left:-1.2em;
     padding:0px;
     line-height:0.8em;
     clear:both;
+}
+
+div.searchfilter ul.facetmenu li.active_filter {
+    font-weight:bold;
+    background-color:#ffa;
+    line-height:130%;
 }
 
 div.searchfilter ul.facetmenu li a {

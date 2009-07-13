@@ -117,10 +117,17 @@
                             <input type="submit" />
                         </form>
                     </div>
-                    <ul class="facetmenu" tal:repeat="filter python:facet(view.context)">
-                        <li><a class="filterchoice" href="#" 
+                    <ul class="facetmenu">
+                        <tal:block repeat="filter python:facet(view.context)">
+                        <li tal:condition="python: not view.is_active_filter(facet,filter)">
+                            <a class="filterchoice" href="#" 
                                 tal:attributes="href python:view.filter_link(facet, filter)"
-                                tal:content="filter/title">filter title</a></li>
+                                tal:content="filter/title">filter title</a>
+                        </li>
+                        <li class="active_filter" tal:condition="python: view.is_active_filter(facet,filter)">
+                            <span tal:content="filter/title">filter title</span>
+                        </li>
+                        </tal:block>
                     </ul>
                 </div>
             </tal:block>
