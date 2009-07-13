@@ -1,8 +1,20 @@
 Changelog
 =========
 
-0.01 (xxxx-xx-xx)
------------------
+0.01 (Early community feedback release of some basic functionality)
+-------------------------------------------------------------------
+ 
+ * A facet_listing view for folderish objects in Plone.
+ 
+ * A basic working set of fully-functional, but hardcoded in configuration
+   facets for folder listing.
+
+ * A text search facet.
+ 
+ * Support for filter vocabularies sourced from dynamic vocabularies found
+   via utility lookup, as well as directly set on facet.
+ 
+ * Simple transient objects representing configuration state.
 
  * add BaseTestCase with convenience methods to create test content
         

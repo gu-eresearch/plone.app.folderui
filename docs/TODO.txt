@@ -2,18 +2,22 @@
 Still to do:
 ------------
 
-* QueryRunner components to use catalog to adapt, execute contents of
-  IComposedQuery as a portal_catalog query.
-
-* Testing query components against live content.
-
-* Support multiple queries to same index.
-
-* HTML/JavaScript/CSS work as needed for listing view mockups.
-
-* Work on views for listings and filters.
-
-* Work on configuration backend; initially load configuration from filesystem.
-
-* Work on configuration front-end.
-
+ * Hookup view in available view methods in FTIs for folders, Plone site on 
+   package install extension profile.
+ 
+ * Support multiple queries to same index.
+ 
+ * Register components now registered in Python, instead using ZCML.
+ 
+ * Work on configuration persistence and front-end.
+ 
+ * Reasonably efficient means of generating facet link counts.
+ 
+ * Support optional inclusion of sub-folder contents.
+ 
+ * More date range factory components.
+ 
+ * Support dynamic date-ranges, based on vocabulary factory and current
+   context.
+ 
+ * More integration tests.
