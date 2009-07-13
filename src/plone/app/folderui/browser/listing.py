@@ -109,6 +109,9 @@ class FacetListing(BrowserView):
         qs = self.facet_state_querystring()
         rem = urllib.urlencode({('facet.%s' % facet.name) : filter.name})
         ## remove current filter and normalize remaining querystring:
+        if rem not in qs:
+            #filter.name did not work, try by value (e.g. text facet)
+            rem = urllib.urlencode({('facet.%s' % facet.name) : filter.value})
         qs = qs.replace(rem, '')
         qs = qs.replace('?&','?')
         qs = qs.replace('&&', '&')
