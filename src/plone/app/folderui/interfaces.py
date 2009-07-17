@@ -54,20 +54,51 @@ class IComposedQuery(Interface):
 
 
 class IQueryResults(IIterableMapping):
-    """Results object should be iterable mapping of results"""
+    """
+    Results object should be iterable mapping of results, where key is some
+    record id for object, and value is a brain-like object containing metadata
+    attributes.
+    
+    Optionally, if the component providing this interface wraps a
+    lazy-evaluated seqence, values() may return that lazy sequence.
+    """
+    
+    setid = Attribute('Read-only integer set id property', 
+        """
+        A read-only property for some determinate integer id for the
+        record id set based completely on the composition of the member
+        set.  Should be similar in behavior to performing:
+        
+            hash(frozenset(self.keys())).
+        
+        The resulting setid for any set should be identical for the same
+        set of member elements regardless of element order, and across
+        threads or machines of the same architecture (a hash on 64-bit box
+        need not be the same for hash on a 32-bit box, this is an accepted
+        limitation).
+        
+        Having a determinate way to identify a set based on the member
+        elements contained within the set -- the whole is based on the 
+        parts -- is potentially useful for indexing set values and set
+        relationships.
+        """)
 
 
 class IQueryRunner(Interface):
     """
-    Runs a query implementing IComposedQuery, for a particular implementation,
-    on call.  May be an interface for adapters that adapt IComposedQuery, 
-    implement IQueryRunner, and return IQueryResults on __call__().
+    Callable query runner takes a query object, and returns an iterable
+    mapping of results implementing IQueryResults.
     """
     
-    def __call__():
+    def __call__(composed):
         """
-        run query configured for runner (likely through adaptation);
-        return IQueryResults object
+        Run query specified in composed, which is an object providing either
+        IQueryFilter or IComposedQuery.  Should return mapping object
+        providing IQueryResults.  Optionally may cache information about
+        the result for future queries.
+        
+        Query runner may run in a context -- for example, that of a specific
+        folder path, and this may modify the eventual query making results.
         """
 
 

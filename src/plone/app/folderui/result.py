@@ -93,7 +93,7 @@ class IterableCatalogResults(object):
         if islazymap(self.context):
             if not hasattr(self, '_catalog_rids'):
                 try:
-                    self._catalog_rids = list(self.context._seq)
+                    self._catalog_rids = self.context._seq
                 except AttributeError:
                     # LazyMap instance _seq undefined, means _data is
                     # populated with all brains, and we need to get RIDs from 
@@ -104,7 +104,16 @@ class IterableCatalogResults(object):
         raise NotImplementedError('LazyCat not supported yet.') #TODO
     
     def keys(self):
-        return self._keys()
+        k = self._keys()
+        if not isinstance(k, list):
+            return list(k)
+        return k
+    
+    @property
+    def setid(self):
+        if not hasattr(self, '_result_set_id'):
+            self._result_set_id = hash(frozenset(self._keys()))
+        return self._result_set_id
     
     def values(self):
         """Returns LazyMap of brains (raw result from catalog)"""

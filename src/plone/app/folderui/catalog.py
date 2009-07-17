@@ -108,19 +108,28 @@ class AdvancedQueryRunner(object):
         return catalog
     
     def __call__(self, composed):
-        if not IComposedQuery.providedBy(composed):
-            raise ValueError('query must provide IComposedQuery interface')
+        if not (IComposedQuery.providedBy(composed) or 
+            IQueryFilter.providedBy(composed)):
+            raise ValueError('query must provide proper interface')
         catalog = self._get_catalog()
-        # restrict query to context/folder path:
-        if u'path' not in [f.index for f in composed.filters]:
-            path = '/'.join(self.context.getPhysicalPath())
-            pathq = AdvancedQuery.Generic('path', {'query': path, 'depth':1})
+        if IQueryFilter.providedBy(composed):
+            # if we get IQueryFilter, just query catalog globally for just
+            # this one filter/index, without regard to path.
+            # the major use for this is filter-link-counts, assuming that
+            # set intersections will be computed from caches/indexes outside
+            # the catalog.
+            query = aquery_filter(composed)
         else:
-            # path was specified in query either to include subfolder contents
-            # or to use a different folder path from current context.
-            pathq = None
-        # build query, pass path
-        query = mkaquery(composed, extra=pathq)
+            # restrict query to context/folder path:
+            if u'path' not in [f.index for f in composed.filters]:
+                path = '/'.join(self.context.getPhysicalPath())
+                pathq = AdvancedQuery.Generic('path', {'query': path, 'depth':1})
+            else:
+                # path was specified in query either to include subfolder contents
+                # or to use a different folder path from current context.
+                pathq = None
+            # build query, pass path
+            query = mkaquery(composed, extra=pathq)
         res = catalog.evalAdvancedQuery(query)
         #TODO: support sorting!
         return IterableCatalogResults(res, catalog)
