@@ -110,9 +110,15 @@ class IterableCatalogResults(object):
         return k
     
     @property
+    frozen(self):
+        if not hasattr(self, '_frozen_result_set'):
+            self._frozen_result_set = frozenset(self._keys())
+        return self._frozen_result_set
+    
+    @property
     def setid(self):
         if not hasattr(self, '_result_set_id'):
-            self._result_set_id = hash(frozenset(self._keys()))
+            self._result_set_id = hash(self.frozen)
         return self._result_set_id
     
     def values(self):

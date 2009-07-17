@@ -63,6 +63,7 @@ class IQueryResults(IIterableMapping):
     lazy-evaluated seqence, values() may return that lazy sequence.
     """
     
+    frozen = Attribute('Read-only frozenset of result record ids')
     setid = Attribute('Read-only integer set id property', 
         """
         A read-only property for some determinate integer id for the
