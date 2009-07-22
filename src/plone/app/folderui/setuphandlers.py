@@ -12,6 +12,10 @@ from random import choice
 
 from Products.CMFCore.utils import getToolByName
 
+from interfaces import ISetCacheTools
+from cache import PersistentSetCacheTools
+from utils import sitemanager_for
+
 
 logger = logging.getLogger('folderui')
 
@@ -181,3 +185,16 @@ def setup_sample_content(context):
         content.reindexObject()
     
     site.reindexObject()
+
+
+# handler for bootstrapping local set cache component:
+
+def bootstrap_cache_utilities(context=None):
+    site = None
+    if context is not None:
+        site = context.getSite()
+    sm = sitemanager_for(site)
+    if sm.queryUtility(ISetCacheTools) is None:
+        logger.info('added persistent local utility for ISetCacheTools')
+        sm.registerUtility(PersistentSetCacheTools(), ISetCacheTools)
+
