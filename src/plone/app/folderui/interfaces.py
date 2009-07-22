@@ -1,7 +1,9 @@
 from zope.interface import Interface, Attribute
 from zope.interface.common.mapping import IIterableMapping, IWriteMapping
+from zope.interface.common.sequence import (ISequence,
+    IUniqueMemberWriteSequence,)
 from zope.schema import (Bool, Choice, Datetime, List, Object, TextLine, 
-    Text, Tuple, )
+    Text, Tuple, BytesLine, )
 from zope.schema.vocabulary import SimpleVocabulary, SimpleTerm
 from zope.schema.interfaces import ITitledTokenizedTerm, IVocabularyFactory
 from zope.component.interfaces import IFactory
@@ -16,6 +18,9 @@ FACETS_ALL = 1 #used to include/exclude all facets in configuration
 
 class IQueryFilter(Interface):
     """implementation-neutral query fragment to be applied to a single index"""
+    uid = BytesLine(title=u'Unique id',
+        description=u'A string id unique to site, possibly an RFC 4122 UUID.',
+        required=False,)
     index = TextLine(title=u'Index name or identifier', required=True)
     value = Object(title=u'Search value(s)', schema=Interface, required=False)
     query_range = Choice(vocabulary=mkvocab(('min','max','minmax',None)),
@@ -293,4 +298,45 @@ class ITitleLookup(Interface):
         return unicode title for token, possibly using context for 
         placeful lookup, if needed.
         """
+
+
+class IRecordInvalidationSet(IUniqueMemberWriteSequence, ISequence):
+    """
+    set of integer record ids that should be considered stale for
+    purposes of search results; if a search result includes one of these
+    documents, then filter counts for the facets intersected with that
+    search should be re-generated from query, not reported from cache.
+    """
+    def insert(key):
+        """add an integer value (key) to the set"""
+    
+    def remove(key):
+        """remove an integer value (key) from the set"""
+
+
+class IRecordSetCache(IIterableMapping):
+    """
+    Iterable mapping of integer keys to values of frozenset objects containing
+    integer record ids of cataloged objects in a result set.  Keys should be
+    deterministic based on set membership, as hash(frozenset()) is.
+    """
+
+
+class IFilterSetIdCache(IIterableMapping):
+    """
+    Iterable mapping of uuid string keys to integer set ids.  This is used
+    in conjuntion with IRecordSetCache components to form the other half
+    of a lookup from filters to result sets.
+    """
+
+
+class ISetCacheTools(Interface):
+    """
+    Set of tools related to caching and invalidation of result sets of record
+    ids, query filter uuids to sets.
+    """
+    set_cache = Object(schema=IRecordSetCache)
+    filter_setid_cache = Object(schema=IFilterSetIdCache)
+    invalidated_records = Object(schema=IRecordInvalidationSet)
+
 
