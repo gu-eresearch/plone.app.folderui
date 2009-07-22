@@ -110,7 +110,7 @@ class IterableCatalogResults(object):
         return k
     
     @property
-    frozen(self):
+    def frozen(self):
         if not hasattr(self, '_frozen_result_set'):
             self._frozen_result_set = frozenset(self._keys())
         return self._frozen_result_set
@@ -144,6 +144,9 @@ class IterableCatalogResults(object):
     
     def __len__(self):
         return len(self._keys())
+    
+    def __contains__(self, key):
+        return key in self._keys()
     
     def __add__(self, other):
         """
