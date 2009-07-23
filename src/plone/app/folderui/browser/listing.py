@@ -25,12 +25,17 @@ class FacetListing(BrowserView):
             return []
         return facets.values()
     
-    def listings(self):
+    def _listings(self):
+        if hasattr(self, '_result_map'):
+            return self._result_map
         q = self.compose_from_query_state()
         runner = AdvancedQueryRunner(self.context)
         #runner = queryUtility(IQueryRunner) #TODO: decouple later
-        result_map = runner(q)
-        return result_map.values() #LazyMap of brains
+        self._result_map = runner(q)
+        return self._result_map
+    
+    def listings(self):
+        return self._listings().values() #LazyMap of brains
     
     def batch(self, b_size=100):
         b_size = int(self.request.get('b_size',b_size))
@@ -127,4 +132,7 @@ class FacetListing(BrowserView):
     def is_active_filter(self, facet, filter):
         fragment = self._link_fragment(facet, filter)
         return fragment in self.facet_state_querystring()
+    
+    def count(self, facet, filter):
+        return filter.count(self.context, facet, self._listings())
 

@@ -4,18 +4,21 @@ facets configuration.
 """
 
 from zope.interface import implements
-from interfaces import ( IFacetPathRules, IFacetSettings, IFacetSpecification,
-    IQueryFilter, IFilterSpecification, IDateRange, IDateRangeFactory,
-    FACETS_ALL, is_daterange, )
 from zope.component import getGlobalSiteManager, queryUtility, IFactory
 from zope.schema import getFieldsInOrder, getFieldNames
 from zope.schema.fieldproperty import FieldProperty
 from zope.schema.interfaces import IVocabularyFactory
 from zope.schema.vocabulary import SimpleVocabulary
+from BTrees.IIBTree import IISet, intersection
+
+from interfaces import ( IFacetPathRules, IFacetSettings, IFacetSpecification,
+    IQueryFilter, IFilterSpecification, IDateRange, IDateRangeFactory,
+    ISetCacheTools, IQueryResults, FACETS_ALL, is_daterange, )
 import vocab #triggers utility registration, TODO: move reg. to ZCML
 from daterange import RANGES
-from utils import dottedname
+from utils import dottedname, sitemanager_for
 import query #trigger default factory registration; TODO: move reg. to ZCML
+from catalog import AdvancedQueryRunner
 
 
 class BaseFilterSpecification(object):
@@ -43,7 +46,45 @@ class BaseFilterSpecification(object):
             return str(self.name)
         return repr(self.value)
     
-    def __call__(self):
+    def count(self, context, facet, intersect=None):
+        if IQueryResults.providedBy(intersect):
+            intersect = IISet(intersect.keys())
+        sm = sitemanager_for(context)
+        unique_name = '%s.%s' % (facet.name, self.name)
+        cache_tools = queryUtility(ISetCacheTools, context=sm)
+        invalidated = cache_tools.invalidated_records
+        if not isinstance(invalidated, IISet):
+            invalidated = IISet(invalidated)
+        if isinstance(intersect, IISet):
+            invalid = len(intersection(intersect, invalidated)) > 0
+        if unique_name in cache_tools.filter_setid_cache:
+            setid = cache_tools.filter_setid_cache[unique_name]
+            if setid in cache_tools.set_cache:
+                if invalid:
+                    del(cache_tools.set_cache[setid])
+                    del(cache_tools.filter_setid_cache[unique_name])
+                else:
+                    records = cache_tools.set_cache[setid]
+                    if intersect is None:
+                        return len(records)
+                    if isinstance(intersect, IISet):
+                        #optimal to cast smaller set to match IISet.
+                        return len(intersection(intersect, IISet(records)))
+                    return len(set(intersect) & records)
+        #otherwise, at this point, no cached value, so query catalog...
+        qf = self(unique_name)
+        runner = AdvancedQueryRunner(context)
+        result = runner(qf)
+        setid = result.setid
+        cache_tools.set_cache[setid] = result.frozen
+        cache_tools.filter_setid_cache[unique_name] = setid
+        if intersect is None:
+            return len(result)
+        if isinstance(intersect, IISet):
+            return len(intersection(intersect, IISet(result.frozen)))
+        return len(set(intersect) & result.frozen)
+    
+    def __call__(self, unique_name=None):
         v = self.value
         if IDateRangeFactory.providedBy(v) or IDateRange.providedBy(v):
             qf = query.date_range_filter(v)
@@ -55,6 +96,8 @@ class BaseFilterSpecification(object):
         if self.index:
             qf.index = self.index
         qf.negated = self.negated
+        if unique_name is not None:
+            qf.uid = str(unique_name)
         return qf
 
 
