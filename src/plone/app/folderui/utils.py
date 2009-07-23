@@ -38,7 +38,6 @@ def modify_handler(obj, event):
 
 
 def sitemanager_for(site):
-    print site
     if site is not None:
         portal = getToolByName(site, 'portal_url').getPortalObject()
         return getSiteManager(portal)
