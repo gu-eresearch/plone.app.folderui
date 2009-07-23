@@ -125,13 +125,14 @@ class AdvancedQueryRunner(object):
                 path = '/'.join(self.context.getPhysicalPath())
                 pathq = AdvancedQuery.Generic('path', {'query': path, 'depth':1})
             else:
-                # path was specified in query either to include subfolder contents
-                # or to use a different folder path from current context.
+                # path was specified in query either to include subfolder 
+                # contents or to use a different folder path from current
+                # context.
                 pathq = None
             # build query, pass path
             query = mkaquery(composed, extra=pathq)
         res = catalog.evalAdvancedQuery(query)
-        #TODO: support sorting!
+        #TODO: support sorting (should be optional via argument)!
         return IterableCatalogResults(res, catalog)
 
 

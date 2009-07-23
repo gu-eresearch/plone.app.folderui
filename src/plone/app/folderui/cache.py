@@ -1,6 +1,5 @@
 from zope.interface import implements, alsoProvides
 from zope.interface.common.mapping import IIterableMapping
-from zope.component import getGlobalSiteManager, getSiteManager, queryUtility
 from BTrees.IIBTree import IISet
 from BTrees.IOBTree import IOBTree
 from BTrees.OIBTree import OIBTree
