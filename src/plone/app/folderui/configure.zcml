@@ -8,5 +8,11 @@
   <include file='profiles.zcml' />
 
   <include package=".browser" />
+  
+  <subscriber
+    for="Products.Archetypes.interfaces._base.IBaseContent
+         zope.app.container.interfaces.IObjectModifiedEvent"
+    handler=".utils.modify_handler"
+    />
 
 </configure>
