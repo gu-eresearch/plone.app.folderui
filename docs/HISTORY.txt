@@ -1,6 +1,15 @@
 Changelog
 =========
 
+0.02
+----
+
+ * Added local utility for set caching, persists filter ids to set hash ids,
+   and hash of frozenset of catalog record ids to frozenset.  This allows for
+   caching query results for each filter, and only performing a quick set
+   intersection for each link, not an actual catalog query, if cached. 
+
+
 0.01 (Early community feedback release of some basic functionality)
 -------------------------------------------------------------------
  
