@@ -60,12 +60,17 @@ def date_range_filter(dr):
     
     EXAMPLE USAGE:
     --------------
-    
+   
+    Register default components declared in ZCML and daterange.py:
+   
+    >>> from plone.app.folderui.config import register_defaults
+    >>> register_defaults()
+    >>> import plone.app.folderui.daterange #default date range factories
+     
     Get date range factory and date range:
     
     >>> from datetime import datetime
     >>> from zope.component import queryUtility
-    >>> import plone.app.folderui.daterange #register default components
     >>> from plone.app.folderui.utils import dottedname
     >>> from plone.app.folderui.interfaces import IDateRangeFactory
     >>> this_month_factory = queryUtility(IDateRangeFactory, 'This month')
