@@ -17,7 +17,6 @@ from interfaces import ( IFacetPathRules, IFacetSettings, IFacetSpecification,
 import vocab #triggers utility registration, TODO: move reg. to ZCML
 from daterange import RANGES
 from utils import dottedname, sitemanager_for
-import query #trigger default factory registration; TODO: move reg. to ZCML
 from catalog import AdvancedQueryRunner
 
 
@@ -323,10 +322,5 @@ FACETS = facets(
 
 
 gsm = getGlobalSiteManager()
-gsm.registerUtility(BaseFilterSpecification,
-    IFactory,
-    name=dottedname(IFilterSpecification))
-
-
 gsm.registerUtility(FACETS, IFacetSettings)
 

@@ -8,7 +8,29 @@
   <include file='profiles.zcml' />
 
   <include package=".browser" />
+
+  <!-- factory registration: -->
+  <utility
+    component=".catalog.AdvancedQueryRunner"
+    provides="zope.component.interfaces.IFactory"
+    name="plone.app.folderui.interfaces.IQueryRunner" />
+
+  <utility
+    component=".defaults.BaseFilterSpecification"
+    provides="zope.component.interfaces.IFactory"
+    name="plone.app.folderui.interfaces.IFilterSpecification" />
   
+  <utility
+    component=".query.ComposedQuery"
+    provides="zope.component.interfaces.IFactory"
+    name="plone.app.folderui.interfaces.IComposedQuery" />
+  
+  <utility
+    component=".query.QueryFilter"
+    provides="zope.component.interfaces.IFactory"
+    name="plone.app.folderui.interfaces.IQueryFilter" />
+  
+  <!-- event subscriber registration: --> 
   <subscriber
     for="Products.Archetypes.interfaces._base.IBaseContent
          zope.app.container.interfaces.IObjectModifiedEvent"

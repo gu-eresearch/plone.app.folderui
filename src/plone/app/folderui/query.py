@@ -107,8 +107,3 @@ def date_range_filter(dr):
     return factory(value=(dr.start, dr.end), query_range=dr.query_range)
 
 
-# register default factories on import of this module
-gsm = getGlobalSiteManager()
-gsm.registerUtility(ComposedQuery, IFactory, name=dottedname(IComposedQuery))
-gsm.registerUtility(QueryFilter, IFactory, name=dottedname(IQueryFilter))
-
