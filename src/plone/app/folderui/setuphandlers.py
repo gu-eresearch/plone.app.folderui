@@ -191,8 +191,10 @@ def setup_sample_content(context):
 
 def bootstrap_cache_utilities(context=None):
     site = None
-    if context is not None:
+    if context is not None and hasattr(context, 'getSite'):
         site = context.getSite()
+    else:
+        site = context
     sm = sitemanager_for(site)
     if sm.queryUtility(ISetCacheTools) is None:
         logger.info('added persistent local utility for ISetCacheTools')

@@ -53,7 +53,8 @@ def setup_product():
 
 
 setup_product()
-ptc.setupPloneSite(products=['example.tests'])
+ptc.setupPloneSite(products=['example.tests'],
+    extension_profiles=('plone.app.folderui:default',))
 
 
 class BaseTestCase(ptc.PloneTestCase):
