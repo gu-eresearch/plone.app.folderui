@@ -2,7 +2,7 @@ import urllib
 
 from zope.component import queryUtility, IFactory, ComponentLookupError
 from Products.Five import BrowserView
-from Products.CMFPlone import Batch
+from Products.CMFPlone.PloneBatch import Batch
 
 from plone.app.folderui import defaults #triggers registration: TODO: move reg.
 from plone.app.folderui.interfaces import IFacetSettings, IFilterSpecification
