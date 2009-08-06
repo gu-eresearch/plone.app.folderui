@@ -36,6 +36,8 @@ class FakeCatalog(object):
 class TestIterableCatalogResults(unittest.TestCase):
     
     def setUp(self):
+        from plone.app.folderui.config import register_defaults
+        register_defaults()
         self.cat = FakeCatalog()
         self.cat[11235813] = FakeBrain()
         self.cat[12345678] = FakeBrain()

@@ -7,7 +7,11 @@ from plone.app.folderui.defaults import BasePathRules
 from plone.app.folderui.interfaces import FACETS_ALL
 
 class PathRulesTests(unittest.TestCase):
-    
+
+    def setUp(self):
+        from plone.app.folderui.config import register_defaults
+        register_defaults()
+
     def test_path_rules(self):
         pathrules = BasePathRules()
         

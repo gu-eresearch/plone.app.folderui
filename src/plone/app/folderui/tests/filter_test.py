@@ -5,8 +5,9 @@ from plone.app.folderui.interfaces import IQueryFilter
 
 class FilterTest(unittest.TestCase):
     def setUp(self):
-        pass
-    
+        from plone.app.folderui.config import register_defaults
+        register_defaults()
+ 
     def test_call_spec(self):
         """
         calling BaseFilterSpecification obj should return object 
@@ -14,13 +15,13 @@ class FilterTest(unittest.TestCase):
         """
         spec = BaseFilterSpecification()
         spec.index = u'creator'
-        spec.values = ('admin',)
+        spec.value = 'admin'
         spec.name = u'creator'
         spec.title = u'Creator'
         qf = spec()
         assert IQueryFilter.providedBy(qf)
         assert spec.index == qf.index
-        assert spec.values == qf.values
+        assert spec.value == qf.value
         assert spec.query_range == qf.query_range
 
 
