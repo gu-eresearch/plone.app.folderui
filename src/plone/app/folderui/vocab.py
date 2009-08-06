@@ -44,6 +44,8 @@ class UniqueValuesFactory(object):
         t = term_factory()
         t.name = unicode(value)
         if title:
+            if isinstance(title, str):
+                title = title.decode('utf-8')
             t.title = title
         t.value = value
         t.index = unicode(self.index)
