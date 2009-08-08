@@ -6,6 +6,7 @@ import unittest
 from plone.app.folderui.defaults import BasePathRules
 from plone.app.folderui.interfaces import FACETS_ALL
 
+
 class PathRulesTests(unittest.TestCase):
 
     def setUp(self):
@@ -48,6 +49,13 @@ class PathRulesTests(unittest.TestCase):
     
     def test_reset_for_path(self):
         pass
+
+
+def test_suite():
+    suite = unittest.TestSuite()
+    suite.addTest(unittest.makeSuite(PathRulesTests))
+    return suite
+
 
 if __name__ == '__main__':
     unittest.main()

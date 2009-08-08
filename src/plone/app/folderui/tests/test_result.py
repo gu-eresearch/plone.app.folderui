@@ -92,6 +92,12 @@ class TestIterableCatalogResults(unittest.TestCase):
         assert list(r.keys()) == self.orig_rids
 
 
+def test_suite():
+    suite = unittest.TestSuite()
+    suite.addTest(unittest.makeSuite(TestIterableCatalogResults))
+    return suite
+
+
 if __name__ == '__main__':
     unittest.main()
 
