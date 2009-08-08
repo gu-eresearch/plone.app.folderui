@@ -85,7 +85,7 @@ class TestVocabularies(BaseTestCase):
         self.add_content('testcontent', username='testuser')
         self.add_member('second')
         vocabulary = all_creators_vfactory(self.portal)
-        assert len(vocabulary) == 1
+        assert len(vocabulary) == 2
         assert 'testuser' in vocabulary
 
         

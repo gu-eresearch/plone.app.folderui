@@ -71,10 +71,10 @@ class BaseTestCase(ptc.PloneTestCase):
         self.workflow = getToolByName(self.portal, 'portal_workflow')
         self.membership = getToolByName(self.portal, 'portal_membership')
         self.loginAsPortalOwner()
-        #remove all content so we don't get it in catalog queries.
+        #remove all content in portal so we don't get it in catalog queries.
+        content_ids = self.portal.contentIds()
+        self.portal.manage_delObjects(content_ids)
         self._add_target_folder()
-        content_ids = self.target.contentIds()
-        self.target.manage_delObjects(content_ids)
         self.catalog.refreshCatalog(clear=1)
 
     def add_member(self, username, fullname="", roles=('Manager',),
