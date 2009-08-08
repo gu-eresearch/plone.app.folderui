@@ -59,14 +59,22 @@ ptc.setupPloneSite(products=['example.tests'],
 
 class BaseTestCase(ptc.PloneTestCase):
 
+    def _add_target_folder(self, name='testfolder'):
+        self.portal.invokeFactory('Folder', name)
+        self.target = self.portal[name]
+
+    def targetpath(self):
+        return '/'.join(self.target.getPhysicalPath())
+
     def afterSetUp(self):
         self.catalog = getToolByName(self.portal, 'portal_catalog')
         self.workflow = getToolByName(self.portal, 'portal_workflow')
         self.membership = getToolByName(self.portal, 'portal_membership')
         self.loginAsPortalOwner()
         #remove all content so we don't get it in catalog queries.
-        content_ids = self.portal.contentIds()
-        self.portal.manage_delObjects(content_ids)
+        self._add_target_folder()
+        content_ids = self.target.contentIds()
+        self.target.manage_delObjects(content_ids)
         self.catalog.refreshCatalog(clear=1)
 
     def add_member(self, username, fullname="", roles=('Manager',),
@@ -115,8 +123,8 @@ class BaseTestCase(ptc.PloneTestCase):
         if title is None:
             title = id
         
-        self.portal.invokeFactory(portal_type, id)
-        content = self.portal[id]
+        self.target.invokeFactory(portal_type, id)
+        content = self.target[id]
         content.setTitle(title)
         content.setDescription(description)
         content.setSubject( '\n'.join(categories) )

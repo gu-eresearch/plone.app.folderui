@@ -21,9 +21,10 @@ class TestAddContent(BaseTestCase):
 
     def test_samples(self):
         self.add_samples()
-        results = self.catalog(portal_type='Document')
+        pathq = {'query': self.targetpath(), 'depth':1}
+        results = self.catalog(portal_type='Document', path=pathq)
         self.assertTrue(len(results) == 2)
-        results = self.catalog()
+        results = self.catalog(path=pathq)
         self.assertTrue(len(results) == 6)
 
     def test_publish(self):
