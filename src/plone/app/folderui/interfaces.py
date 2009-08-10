@@ -1,7 +1,7 @@
 from zope.interface import Interface, Attribute
 from zope.interface.common.mapping import IIterableMapping, IWriteMapping
 from zope.interface.common.sequence import (ISequence,
-    IUniqueMemberWriteSequence,)
+    IUniqueMemberWriteSequence, IReadSequence,)
 from zope.schema import (Bool, Choice, Datetime, List, Object, TextLine, 
     Text, Tuple, BytesLine, )
 from zope.schema.vocabulary import SimpleVocabulary, SimpleTerm
@@ -133,6 +133,12 @@ class IFilterSpecification(ITitledTokenizedTerm):
     
     def __call__():
         """return transient IQueryFilter for this specification"""
+    
+    def count(context, facet, intersect=None):
+        """
+        return a count of items for this filter in a given context, and 
+        a main search result 'intersect' to perform intersection with.
+        """
 
 
 class IFacetSpecification(IVocabularyFactory):
@@ -210,6 +216,26 @@ is_daterange = lambda v: (IDateRange.providedBy(v) or
 
 class ILazySequence(Interface):
     """Marker for Lazy sequence such as ZCatalog LazyMap or similar"""
+
+
+class IFacetedListing(Interface):
+    """
+    Component that controls facets and listings for an adapted folderish
+    context object and some optional query.
+    """
+    
+    result = Object(
+        title=u'Query result',
+        description=u'Folder listing via query result, iterable mapping.',
+        schema=IQueryResults,
+        readonly=True, )
+    
+    facets = Object(
+        title=u'Facet list',
+        description=u'IFacetSpecification objects for the folder context.',
+        schema=IReadSequence,
+        readonly=True, )
+
 
 
 class IFacetSettings(IIterableMapping, IWriteMapping):
