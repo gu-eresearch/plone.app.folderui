@@ -19,7 +19,11 @@ FACETS_ALL = 1 #used to include/exclude all facets in configuration
 class IQueryFilter(Interface):
     """implementation-neutral query fragment to be applied to a single index"""
     uid = BytesLine(title=u'Unique id',
-        description=u'A string id unique to site, possibly an RFC 4122 UUID.',
+        description=\
+            u"""
+            String id unique to site; may be dotted name of filter plus facet
+            or a (RFC 4122) UUID.
+            """,
         required=False,)
     index = TextLine(title=u'Index name or identifier', required=True)
     value = Object(title=u'Search value(s)', schema=Interface, required=False)
@@ -234,6 +238,18 @@ class IFacetedListing(Interface):
         title=u'Facet list',
         description=u'IFacetSpecification objects for the folder context.',
         schema=IReadSequence,
+        readonly=True, )
+    
+    counts = Object(
+        title=u'Filter counts',
+        description=\
+            u"""
+            Mapping of set counts intersected with self.result; keys should
+            match IQueryFilter uid value for filter generated from
+            IFilterSpecification; values should be integer counts of
+            intersected hits.
+            """,
+        schema=IIterableMapping,
         readonly=True, )
 
 

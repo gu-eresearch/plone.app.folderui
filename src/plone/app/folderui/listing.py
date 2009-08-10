@@ -1,10 +1,11 @@
 from Products.CMFCore.interfaces._content import IFolderish
 from zope.interface import implements
-from zope.component import adapts, queryUtility, IFactory
+from zope.component import adapts, queryUtility, IFactory, ComponentLookupError
+
 from interfaces import (IQueryResults, IComposedQuery, IFacetSettings,
-    IQueryRunner, IFacetedListing,)
+    IQueryRunner, IFacetedListing, ISetCacheTools,)
 from query import ComposedQuery
-from utils import dottedname
+from utils import dottedname, sitemanager_for
 
 
 class FacetedListing(object):
@@ -20,6 +21,10 @@ class FacetedListing(object):
         elif query is None:
             query = ComposedQuery()
         self.query = query
+        sm = sitemanager_for(self.context)
+        self.cachetools = sm.queryUtility(ISetCacheTools)
+        if self.cachetools is None:
+            raise ComponentLookupError('cannot find local set cache utility')
     
     def _result(self):
         if not hasattr(self, '_result_map'):
@@ -40,4 +45,25 @@ class FacetedListing(object):
                 return []
             self._facets = facets.values()
         return self._facets
+    
+    def _clear_invalidation(self, intersect):
+        invalidated = self.cachetools.invalidated_records
+        clear = set(invalidated) & set(intersect)
+        if clear:
+            s = set(self.cachetools.invalidated_records)
+            for k in clear:
+                s.remove(k)
+            self.cachetools.invalidated_records = frozenset(s)
+    
+    @property
+    def counts(self):
+        if not hasattr(self, '_counts'):
+            intersect = self._result()
+            self._counts = {}
+            for facet in self.facets:
+                for filter in facet(self.context):
+                    key = '%s.%s' % (facet.name, filter.name)
+                    self._counts[key] = filter.count(self.context, facet, intersect)
+            self._clear_invalidation(intersect)
+        return self._counts
 
