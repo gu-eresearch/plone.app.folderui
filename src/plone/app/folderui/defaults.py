@@ -18,6 +18,7 @@ import vocab #triggers utility registration, TODO: move reg. to ZCML
 from daterange import RANGES
 from utils import dottedname, sitemanager_for
 from catalog import AdvancedQueryRunner
+from query import date_range_filter
 
 
 class BaseFilterSpecification(object):
@@ -86,7 +87,7 @@ class BaseFilterSpecification(object):
     def __call__(self, unique_name=None):
         v = self.value
         if IDateRangeFactory.providedBy(v) or IDateRange.providedBy(v):
-            qf = query.date_range_filter(v)
+            qf = date_range_filter(v)
         else:
             factory = queryUtility(IFactory, dottedname(IQueryFilter))
             qf = factory()
@@ -277,6 +278,7 @@ def daterange_facet(**kwargs):
     return f
 
 
+# facets config mapping: register this as IFacetSettings utility in ZCML
 FACETS = facets(
     facet(
         name=u'text',
@@ -319,8 +321,4 @@ FACETS = facets(
         ranges=RANGES,
         query_vocabulary=False, ),
 )
-
-
-gsm = getGlobalSiteManager()
-gsm.registerUtility(FACETS, IFacetSettings)
 
