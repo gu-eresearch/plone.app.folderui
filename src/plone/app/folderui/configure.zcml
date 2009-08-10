@@ -30,6 +30,30 @@
     provides="zope.component.interfaces.IFactory"
     name="plone.app.folderui.interfaces.IQueryFilter" />
   
+  <!-- non-factory utility registrations: -->
+  <utility
+    component=".defaults.FACETS"
+    provides=".interfaces.IFacetSettings"
+    />
+  
+  <utility
+    component=".vocab.all_creators_vfactory"
+    provides="zope.schema.interfaces.IVocabularyFactory"
+    name="creator"
+    />
+  
+  <utility
+    component=".vocab.all_categories_vfactory"
+    provides="zope.schema.interfaces.IVocabularyFactory"
+    name="categories"
+    />
+  
+  <utility
+    component=".vocab.all_types_vfactory"
+    provides="zope.schema.interfaces.IVocabularyFactory"
+    name="type"
+    />
+  
   <!-- event subscriber registration: --> 
   <subscriber
     for="Products.Archetypes.interfaces._base.IBaseContent

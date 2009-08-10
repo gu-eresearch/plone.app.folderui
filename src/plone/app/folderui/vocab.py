@@ -63,20 +63,8 @@ class UniqueValuesFactory(object):
         return SimpleVocabulary(terms)
 
 
-#some factories for indexes:
+#some factories for indexes (register these in ZCML):
 all_creators_vfactory = UniqueValuesFactory('Creator', titlefn=member_fullname)
 all_categories_vfactory = UniqueValuesFactory('Subject', titlefn=capitalize)
 all_types_vfactory = UniqueValuesFactory('Type')
-
-#register vocabulary factories for use by facet specifications:
-gsm = getGlobalSiteManager()
-gsm.registerUtility(all_creators_vfactory,
-    IVocabularyFactory,
-    name='creator')
-gsm.registerUtility(all_categories_vfactory,
-    IVocabularyFactory,
-    name='categories')
-gsm.registerUtility(all_types_vfactory,
-    IVocabularyFactory,
-    name='type')
 
