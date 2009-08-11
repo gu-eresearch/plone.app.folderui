@@ -4,12 +4,10 @@ from zope.component import queryUtility, IFactory, ComponentLookupError
 from Products.Five import BrowserView
 from Products.CMFPlone.PloneBatch import Batch
 
-from plone.app.folderui import defaults #triggers registration: TODO: move reg.
-from plone.app.folderui.interfaces import (IFacetSettings,
-    IFilterSpecification, ISetCacheTools)
+#from plone.app.folderui import defaults #triggers registration: TODO: move reg.
+from plone.app.folderui.interfaces import IFacetSettings, IFilterSpecification
 from plone.app.folderui.query import ComposedQuery
-from plone.app.folderui.catalog import AdvancedQueryRunner
-from plone.app.folderui.utils import dottedname, sitemanager_for
+from plone.app.folderui.utils import dottedname
 from plone.app.folderui.listing import FacetedListing
 
 
