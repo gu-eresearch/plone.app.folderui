@@ -5,42 +5,44 @@ from Products.Five import BrowserView
 from Products.CMFPlone.PloneBatch import Batch
 
 from plone.app.folderui import defaults #triggers registration: TODO: move reg.
-from plone.app.folderui.interfaces import IFacetSettings, IFilterSpecification
+from plone.app.folderui.interfaces import (IFacetSettings,
+    IFilterSpecification, ISetCacheTools)
 from plone.app.folderui.query import ComposedQuery
 from plone.app.folderui.catalog import AdvancedQueryRunner
-from plone.app.folderui.utils import dottedname
+from plone.app.folderui.utils import dottedname, sitemanager_for
+from plone.app.folderui.listing import FacetedListing
 
 
-class FacetListing(BrowserView):
+class ListingView(BrowserView):
     
     def __init__(self, context, request):
-        self.context = context
-        self.request = request
+        BrowserView.__init__(self, context, request)
         self.load_filter_state()
+        query = self.compose_from_query_state()
+        self.provider = FacetedListing(self.context, query)
     
     @property
     def facets(self):
-        facets = queryUtility(IFacetSettings)
-        if facets is None:
-            return []
-        return facets.values()
+        if not hasattr(self, '_facets'):
+            self._facets = self.provider.facets
+        return self._facets
     
-    def _listings(self):
-        if hasattr(self, '_result_map'):
-            return self._result_map
-        q = self.compose_from_query_state()
-        runner = AdvancedQueryRunner(self.context)
-        #runner = queryUtility(IQueryRunner) #TODO: decouple later
-        self._result_map = runner(q)
-        return self._result_map
+    @property
+    def result(self):
+        if not hasattr(self, '_result'):
+            self._result = self.provider.result
+        return self._result #LazyMap of brains
     
-    def listings(self):
-        return self._listings().values() #LazyMap of brains
+    @property
+    def counts(self):
+        if not hasattr(self, '_counts'):
+            self._counts = self.provider.counts
+        return self._counts
     
     def batch(self, b_size=100):
         b_size = int(self.request.get('b_size',b_size))
         b_start = self.request.get('b_start', 0)
-        batch = Batch(self.listings(), b_size, b_start, orphan=0)
+        batch = Batch(self.result, b_size, b_start, orphan=0)
         return batch
     
     def compose_from_query_state(self):
@@ -52,10 +54,8 @@ class FacetListing(BrowserView):
         return q
     
     def _facet_query(self):
-        req = self.request
-        return dict(
-            [(k.replace('facet.',''),v) for k,v in req.items() 
-                if k.startswith('facet.')])
+        return dict([(k.replace('facet.',''),v) for k,v in
+            self.request.items() if k.startswith('facet.')])
     
     def applied_filters(self):
         return self._state.values() #list of tuples of (facet, filter)
@@ -134,5 +134,10 @@ class FacetListing(BrowserView):
         return fragment in self.facet_state_querystring()
     
     def count(self, facet, filter):
-        return filter.count(self.context, facet, self._listings())
+        if not hasattr(self, '_counts'):
+            counts = self.counts #load first time
+        key = '%s.%s' % (facet.name, filter.name)
+        if key in self._counts:
+            return self._counts[key] #return preloaded length of intersection
+        return 0
 

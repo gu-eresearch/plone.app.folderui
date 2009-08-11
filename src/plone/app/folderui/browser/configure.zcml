@@ -9,7 +9,7 @@
     <browser:page
         name="facet_listing"
         for="Products.CMFCore.interfaces._content.IFolderish"
-        class=".listing.FacetListing"
+        class=".listing.ListingView"
         permission="zope.Public"
         template="facet_listing.pt"
         />

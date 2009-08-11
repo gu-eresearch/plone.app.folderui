@@ -9,6 +9,8 @@ from utils import dottedname, sitemanager_for
 
 
 class FacetedListing(object):
+    """listing provider / (multi-)adapter for folder, query"""
+    
     implements(IFacetedListing)
     adapts(IFolderish)
     
