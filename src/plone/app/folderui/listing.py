@@ -2,6 +2,7 @@ from Products.CMFCore.interfaces._content import IFolderish
 from zope.interface import implements
 from zope.component import adapts, queryUtility, IFactory, ComponentLookupError
 
+from cache import PersistentRecordInvalidationSet
 from interfaces import (IQueryResults, IComposedQuery, IFacetSettings,
     IQueryRunner, IFacetedListing, ISetCacheTools,)
 from query import ComposedQuery
@@ -55,11 +56,15 @@ class FacetedListing(object):
             s = set(self.cachetools.invalidated_records)
             for k in clear:
                 s.remove(k)
-            self.cachetools.invalidated_records = frozenset(s)
+            self.cachetools.invalidated_records = \
+                PersistentRecordInvalidationSet(s)
+    
+    def _counts_stale(self):
+        return len(self.cachetools.invalidated_records) > 0
     
     @property
     def counts(self):
-        if not hasattr(self, '_counts'):
+        if not hasattr(self, '_counts') or self._counts_stale():
             intersect = self._result()
             self._counts = {}
             for facet in self.facets:
