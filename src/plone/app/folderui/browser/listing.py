@@ -11,6 +11,11 @@ from plone.app.folderui.utils import dottedname
 from plone.app.folderui.listing import FacetedListing
 
 
+def count_sort_cmp(a,b):
+    if a>b: return 0
+    
+
+
 class ListingView(BrowserView):
     
     def __init__(self, context, request):
@@ -42,6 +47,13 @@ class ListingView(BrowserView):
         b_start = self.request.get('b_start', 0)
         batch = Batch(self.result, b_size, b_start, orphan=0)
         return batch
+    
+    def filters_for(self, facet, cmpfn=None):
+        """sorted filters for facet"""
+        if cmpfn is None:
+            #default, sort filter links by most hits
+            cmpfn = lambda a,b: cmp(self.count(facet, b), self.count(facet, a))
+        return sorted(facet(self.context), cmpfn)
     
     def compose_from_query_state(self):
         """get composed query from current filter state"""
