@@ -15,7 +15,7 @@ class FacetedListing(object):
     implements(IFacetedListing)
     adapts(IFolderish)
     
-    def __init__(self, context, query=None):
+    def __init__(self, context, query=None, include_subfolders=False):
         if not IFolderish.providedBy(context):
             raise ValueError('context does not appear to be a folder')
         self.context = context
@@ -28,12 +28,13 @@ class FacetedListing(object):
         self.cachetools = sm.queryUtility(ISetCacheTools)
         if self.cachetools is None:
             raise ComponentLookupError('cannot find local set cache utility')
+        self.include_subfolders = include_subfolders
     
     def _result(self):
         if not hasattr(self, '_result_map'):
             factory = queryUtility(IFactory, (dottedname(IQueryRunner)))
             runner = factory(self.context)
-            self._result_map = runner(self.query)
+            self._result_map = runner(self.query, self.include_subfolders)
         return self._result_map #IQueryResults == iterable mapping
     
     @property

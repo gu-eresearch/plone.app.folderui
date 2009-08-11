@@ -13,7 +13,6 @@ from plone.app.folderui.listing import FacetedListing
 
 def count_sort_cmp(a,b):
     if a>b: return 0
-    
 
 
 class ListingView(BrowserView):
@@ -22,7 +21,10 @@ class ListingView(BrowserView):
         BrowserView.__init__(self, context, request)
         self.load_filter_state()
         query = self.compose_from_query_state()
-        self.provider = FacetedListing(self.context, query)
+        self.include_subfolders = 'include_subfolders' in request
+        self.provider = FacetedListing(self.context,
+            query,
+            self.include_subfolders)
     
     @property
     def facets(self):
@@ -102,6 +104,16 @@ class ListingView(BrowserView):
             query[k] = filter_spec.name or str(filter_spec.value)
         return urllib.urlencode(query)
     
+    def include_link(self):
+        """link to include subfolders"""
+        return 'facet_listing?%s&include_subfolders' % \
+            self.facet_state_querystring()
+    
+    def exclude_link(self):
+        """link to exclude subfolders"""
+        qs = self.facet_state_querystring()
+        return 'facet_listing?%s' % qs.replace('&include_subfolders','')
+    
     def _link_fragment(self, facet, filter):
         return urllib.urlencode({('facet.%s' % facet.name) : filter.name})
     
@@ -118,6 +130,8 @@ class ListingView(BrowserView):
         qs = self._link_fragment(facet,filter)
         if base:
             qs = '%s&%s' % (base, qs)
+        if self.include_subfolders:
+            qs = '%s&include_subfolders' % qs
         return 'facet_listing?%s' % qs
     
     def strike_filter(self, facet, filter):
@@ -137,6 +151,8 @@ class ListingView(BrowserView):
         qs = qs.replace('&&', '&')
         if qs.endswith('&'):
             qs = qs[:-1]
+        if self.include_subfolders:
+            qs = '%s&include_subfolders' % qs
         return qs
     
     def is_active_filter(self, facet, filter):

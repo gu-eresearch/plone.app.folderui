@@ -107,7 +107,7 @@ class AdvancedQueryRunner(object):
         assert base_hasattr(catalog, 'evalAdvancedQuery')
         return catalog
     
-    def __call__(self, composed):
+    def __call__(self, composed, include_subfolders=False):
         if not (IComposedQuery.providedBy(composed) or 
             IQueryFilter.providedBy(composed)):
             raise ValueError('query must provide proper interface')
@@ -123,7 +123,17 @@ class AdvancedQueryRunner(object):
             # restrict query to context/folder path:
             if u'path' not in [f.index for f in composed.filters]:
                 path = '/'.join(self.context.getPhysicalPath())
-                pathq = AdvancedQuery.Generic('path', {'query': path, 'depth':1})
+                if include_subfolders:
+                    pathq = AdvancedQuery.And(
+                        AdvancedQuery.Generic('path',
+                            {'query': path, 'depth':-1}), #all within hierarchy
+                        AdvancedQuery.Not(
+                            AdvancedQuery.Generic('path',
+                            {'query': path, 'depth':0}))  #not folder itself
+                        )
+                else:
+                    pathq = AdvancedQuery.Generic('path',
+                        {'query': path, 'depth':1})
             else:
                 # path was specified in query either to include subfolder 
                 # contents or to use a different folder path from current

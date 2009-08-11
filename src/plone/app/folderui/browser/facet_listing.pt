@@ -20,7 +20,7 @@
                         use_view_action view/context/site_properties/typesUseViewActionInListings|python:();"
             >
             <h3 tal:content="view/context/Title|view/context/id">Title</h3>
-            <div class="filter_summary" tal:condition="view/applied_filters">
+            <div class="filter_summary" tal:condition="python:view.applied_filters() or view.include_subfolders">
                 <h3>Applied search filters</h3>
                 <div tal:repeat="pair view/applied_filters">
                  <tal:block define="facet python:pair[0]; filter python:pair[1];">
@@ -33,6 +33,19 @@
                     </tal:block>
                  </tal:block>
                 </div>
+            <div class="summary_subfolders">
+                <strong>Contents of subfolders:</strong>
+                    <span tal:condition="python: not view.include_subfolders">
+                        <em>Currently excluded</em>&nbsp;
+                        [<a href=""
+                            tal:attributes="href python:view.include_link()"
+                        >Include</a>]</span>
+                    <span tal:condition="python: view.include_subfolders">
+                        <em>Currently included</em>&nbsp;
+                        [<a href=""
+                            tal:attributes="href python:view.exclude_link()"
+                            >Exclude</a>]</span>
+            </div>
             </div>
             <div class="result_summary">Viewing
                 <span tal:content="batch/start">1</span> to <span tal:content="python:batch.start+batch.length-1">20</span> of
@@ -101,6 +114,21 @@
             <h3>Filter results</h3>
             <!-- <p>Click filter title to show or hide</p> -->
             <p class="instructions">Click a filter below to limit listings; click headings to show/hide filter groups.</p>
+            <div class="searchfilter">
+                <h3>Contents of subfolders</h3>
+                <div style="padding:0.2em;">
+                    <span tal:condition="python: not view.include_subfolders">
+                        <em>Currently excluded</em>&nbsp;
+                        [<a href=""
+                            tal:attributes="href python:view.include_link()"
+                        >Include</a>]</span>
+                    <span tal:condition="python: view.include_subfolders">
+                        <em>Currently included</em>&nbsp;
+                        [<a href=""
+                            tal:attributes="href python:view.exclude_link()"
+                            >Exclude</a>]</span>
+                </div>
+            </div>
             <tal:block repeat="facet view/facets">
                 <div class="searchfilter">
                     <h3 tal:content="facet/title">title</h3>
@@ -130,6 +158,13 @@
                         </li>
                         <li class="active_filter" tal:condition="python: view.is_active_filter(facet,filter)">
                             <span tal:content="filter/title">filter title</span>
+                            <tal:block
+                                define="strike python:view.strike_filter(facet, filter)">
+                              <a 
+                                href=""
+                                class="strike" 
+                                tal:attributes="href string:./facet_listing?${strike}">(remove)</a>
+                            </tal:block>
                         </li>
                         </tal:block>
                     </ul>
