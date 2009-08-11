@@ -98,7 +98,8 @@ class BaseTestCase(ptc.PloneTestCase):
                     end_date   = '2009-01-01',
                     location   = 'somewhere',
                     username = None,
-                    workflow_action = None,):
+                    workflow_action = None,
+                    target_folder=None):
         """
         convenience method.
         title   default: same as id
@@ -123,8 +124,10 @@ class BaseTestCase(ptc.PloneTestCase):
         if title is None:
             title = id
         
-        self.target.invokeFactory(portal_type, id)
-        content = self.target[id]
+        if target_folder is None:
+            target_folder = self.target
+        target_folder.invokeFactory(portal_type, id)
+        content = target_folder[id]
         content.setTitle(title)
         content.setDescription(description)
         content.setSubject( '\n'.join(categories) )
