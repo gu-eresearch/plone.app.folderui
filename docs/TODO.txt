@@ -12,9 +12,6 @@ TODO for 0.03 to 0.1 releases:
         within the same index).
 
   -----
-
-  * Hookup view in available view methods in FTIs for folders, Plone site on 
-    package install extension profile.
   
   * Configuration facets-by-path persistence (local utilty) and front-end
     config form view.  Global configuration should be simple, and anything

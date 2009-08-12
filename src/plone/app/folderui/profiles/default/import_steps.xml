@@ -1,5 +1,12 @@
 <import-steps>
-  <import-step id="plone.app.folderui" handler="plone.app.folderui.setuphandlers.bootstrap_cache_utilities" title="plone.app.folderui local components (set cache)" version="1.0">
+  <import-step id="plone.app.folderui-setcache"
+    handler="plone.app.folderui.setuphandlers.bootstrap_cache_utilities"
+    title="plone.app.folderui local components (set cache)" version="1.0">
+    <dependency step="plone-final"/>
+  </import-step>
+  <import-step id="plone.app.folderui-ftis"
+    handler="plone.app.folderui.setuphandlers.modify_ftis"
+    title="plone.app.folderui add view methods to FTIs" version="1.0">
     <dependency step="plone-final"/>
   </import-step>
 </import-steps>

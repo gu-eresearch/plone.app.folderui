@@ -7,6 +7,9 @@ Changelog
 This release added the ability to include/exclude subfolder contents, and most
 significantly, added a robust system for generating link counts for filters.
 
+  * Hookup view in available view_methods in FTIs for folders, Plone site on 
+    package install extension profile.
+
   * Added local utility for set caching, persists filter ids to set hash ids,
     and hash of frozenset of catalog record ids to frozenset.  This allows for
     caching query results for each filter, and only performing a quick set

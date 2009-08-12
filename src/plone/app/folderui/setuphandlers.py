@@ -200,3 +200,12 @@ def bootstrap_cache_utilities(context=None):
         logger.info('added persistent local utility for ISetCacheTools')
         sm.registerUtility(PersistentSetCacheTools(), ISetCacheTools)
 
+
+def modify_ftis(context):
+    site = context.getSite()
+    typestool = getToolByName(site, 'portal_types')
+    modify_ftis = (typestool['Folder'], typestool['Plone Site'])
+    for fti in modify_ftis:
+        if 'facet_listing' not in fti.view_methods:
+            fti.view_methods = fti.view_methods + ('facet_listing',)
+
