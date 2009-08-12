@@ -47,10 +47,17 @@
                             >Exclude</a>]</span>
             </div>
             </div>
-            <div class="result_summary">Viewing
+            <div class="result_summary"
+                 tal:condition="python:batch.sequence_length">Viewing
                 <span tal:content="batch/start">1</span> to <span tal:content="python:batch.start+batch.length-1">20</span> of
                 <span tal:content="python:batch.sequence_length">85</span>
                 results.
+            </div>
+            <div class="result_summary"
+                 tal:condition="python: not batch.sequence_length">
+                 There are no results contained in this folder 
+                 <tal:block condition="view/include_subfolders">or subfolders</tal:block>
+                 matching your filters.
             </div>
             <div metal:use-macro="view/context/batch_macros/macros/navigation" />
             <div class="item_listing"
@@ -141,6 +148,9 @@
                                     tal:attributes="name python:'facet.'+pair[0].name;
                                                     value python: pair[1].name or pair[1].value;" />
                             </tal:block>
+                            <input tal:condition="view/include_subfolders"
+                                type="hidden" name="include_subfolders"
+                                value="" />
                             <br />
                             <input type="submit" />
                         </form>

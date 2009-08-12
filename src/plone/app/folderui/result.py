@@ -101,7 +101,9 @@ class IterableCatalogResults(object):
                     self._catalog_rids = [b.getRID() 
                         for b in self.context._data]
             return self._catalog_rids
-        raise NotImplementedError('LazyCat not supported yet.') #TODO
+        elif islazycat(self.context) and len(self.context)==0:
+            return []
+        raise NotImplementedError('non-empty LazyCat not supported.')
     
     def keys(self):
         k = self._keys()
