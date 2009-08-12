@@ -36,6 +36,7 @@
     provides=".interfaces.IFacetSettings"
     />
   
+  <!-- dynamic vocabulary factory registrations -->
   <utility
     component=".vocab.all_creators_vfactory"
     provides="zope.schema.interfaces.IVocabularyFactory"
