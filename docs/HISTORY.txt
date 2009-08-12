@@ -4,10 +4,59 @@ Changelog
 0.02
 ----
 
- * Added local utility for set caching, persists filter ids to set hash ids,
-   and hash of frozenset of catalog record ids to frozenset.  This allows for
-   caching query results for each filter, and only performing a quick set
-   intersection for each link, not an actual catalog query, if cached. 
+This release added the ability to include/exclude subfolder contents, and most
+significantly, added a robust system for generating link counts for filters.
+
+  * Added local utility for set caching, persists filter ids to set hash ids,
+    and hash of frozenset of catalog record ids to frozenset.  This allows for
+    caching query results for each filter, and only performing a quick set
+    intersection for each link, not an actual catalog query, if cached. 
+
+  * Refactored listings code out of view class into a separate controller 
+    class (in listing.py).  This is a multi-adapter that takes a folder and
+    an optional IComposedQuery object, and encapsulates results, facets, and
+    filter-counts for that context.  This is more testable; integration tests
+    included.
+
+  * Implemented filter count computation (intersect main result with a
+    singular filter set) and display along with a result-set caching system
+    that avoids the need to re-query the catalog for each set (excepting
+    cases where an object in the main result set is marked as invalidated
+    on edit).
+
+  * Implemented filter-count display in navigation adjacent to each filter
+    hyperlink contained within facet navigation.
+
+  * Test improvements for dynamic vocabulary factory in test_vocab.py.
+
+  * Integrated unit tests so that they can be run either using
+    instance|zopectl test or from command-line without an instance.
+
+  * Implemented tests for set caching and cache invalidation related to
+    set/filter intersection counts from the FacetedListing.counts property.
+
+  * Global component registrations now largely moved from Python to ZCML.
+
+  * Omit display of zero-count filter links.  This currently requires a user
+    to remove a filter to see alternatives (narrowing versus changing) -- this
+    will/should be improved in the UI in future releases.
+
+  * Sort (by default) filter links within a facet by most-to-least hits
+    (this can be overridden in future code with custom cmp function).
+
+  * Add the ability to strike a filter from within facet navigation, in
+    addition to the filter summary box.
+
+  * Support optional inclusion of subfolder contents in listings and facet
+    counts.  The default should be to include direct contents only, subfolder
+    inclusion can be enabled/disabled in the navigation.
+
+  * Integration test for subfolder include/exclude behavior.
+
+  * Bug fix:  better behavior when empty result, fixed exception and display
+    message in listings template.
+
+  * Integration test for component registrations done in ZCML.
 
 
 0.01 (Early community feedback release of some basic functionality)

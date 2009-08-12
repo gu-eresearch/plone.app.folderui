@@ -1,23 +1,76 @@
 
-Still to do:
-------------
+TODO for 0.03 to 0.1 releases:
+------------------------------
 
- * Hookup view in available view methods in FTIs for folders, Plone site on 
-   package install extension profile.
- 
- * Support multiple queries to same index.
- 
- * Register components now registered in Python, instead using ZCML.
- 
- * Work on configuration persistence and front-end.
- 
- * Reasonably efficient means of generating facet link counts.
- 
- * Support optional inclusion of sub-folder contents.
- 
- * More date range factory components.
- 
- * Support dynamic date-ranges, based on vocabulary factory and current
-   context.
- 
- * More integration tests.
+0.03 release TODO:
+------------------
+
+  Major priorities, goals:
+    (1) global configuration
+    
+    (2) multi-set facets (more than one option per index either AND/OR
+        within the same index).
+
+  -----
+
+  * Hookup view in available view methods in FTIs for folders, Plone site on 
+    package install extension profile.
+  
+  * Configuration facets-by-path persistence (local utilty) and front-end
+    config form view.  Global configuration should be simple, and anything
+    beyond configuring site-wide defaults may require entering text into 
+    a textarea in the form that is processed into by-path overrides.
+  
+  * More date range factory components and dynamic date ranges for more
+    useful DateIndex based range filters.
+  
+  * FacetedListing provider/controller class should support facet
+    configuration via BasePathRules and some suitable global defaults for the
+    site root that is acquired by subfolders as default config.  Should have
+    a simple integration test on portal, subfolder (use self.portal and
+    self.target from base test).
+
+  * Tests for multiset (multiple choices AND/OR within single facet/index)
+    queries (and any fixes to query runner or listing provider if tests
+    dictate).
+
+  * Noscript HTML form submission UI for multiset queries within same facet. 
+    This will be one form per page.
+
+  * Need some UI tweaks to allow someone to both narrow their search in a 
+    facet and change their search for a single choice in such a way that also
+    is consistent with the plan for multi-set UI.
+
+  * Omit from display empty facets with no displayed filters.
+
+
+0.1 release TODO:
+-----------------
+
+  Major priorities:
+  
+  (1) enhance UI interactivity for multiset filter selection.
+  
+  (2) Global configuration of facets and a way to spell out per-path overrides.
+
+  -----
+
+  * Progressive javascript enhancements for multiset selection (integrate
+    javascript from mockup doc, improve).
+  
+  * Persistent local utility stores site-wide facet-by-path instead of a
+    transient global dict.  GenericSetup default profile should install
+    reasonable defaults.
+  
+  * A simple user interface for configuring facets inclusion/exclusion by path.
+  
+  * Ability to configure an individual facet to display finite number of 
+    facets.
+  
+  * Ability to configure which facets are contracted by default in 
+    javascript display.
+  
+  * Consider whether any of the factory registrations would be better 
+    registered and queried as named adapters (e.g. for IQueryRunner) instead
+    of factories for adapters.
+
