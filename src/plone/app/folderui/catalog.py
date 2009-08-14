@@ -85,7 +85,7 @@ def mkaquery(composed, extra=None):
             queries[qf.index] = aquery_filter(qf)
     for index in [k for k,v in queries.items() if isinstance(v,list)]:
         intraindex_conjunction = conjunctions[index]
-        queries[index] = intraindex_conjunctions(*queries[index]) #list->And/Or
+        queries[index] = intraindex_conjunction(*queries[index]) #list->And/Or
     if extra is not None:
         if isinstance(extra, AdvancedQuery._BaseQuery):
             extra = [extra]

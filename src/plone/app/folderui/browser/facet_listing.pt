@@ -22,17 +22,23 @@
             <h3 tal:content="view/context/Title|view/context/id">Title</h3>
             <div class="filter_summary" tal:condition="python:view.applied_filters() or view.include_subfolders">
                 <h3>Applied search filters</h3>
-                <div tal:repeat="pair view/applied_filters">
-                 <tal:block define="facet python:pair[0]; filter python:pair[1];">
+                <tal:block repeat="state view/applied_filters">
+                 <div class="facet_info" tal:define="facet python:state.facet; filters python:state.filters;">
                      <span class="facetname" tal:content="string:${facet/title}:"></span>
-                     <span class="filtername" tal:condition="filter/title" tal:content="filter/title"></span>
-                     <span class="filtername" tal:condition="python: not filter.title and filter.name" tal:content="filter/name"></span>
-                     <span class="filtername" tal:condition="python: not filter.title and not filter.name" tal:content="filter/value"></span>
-                    <tal:block define="strike python:view.strike_filter(facet, filter)">
-                      <a href="" class="strike" tal:attributes="href string:./facet_listing?${strike}">(remove)</a>
-                    </tal:block>
-                 </tal:block>
-                </div>
+                     <div class="summary_filters">
+                       <tal:block repeat="filter filters">
+                         <span class="filtername">
+                         <tal:block condition="filter/title" tal:content="filter/title"></tal:block>
+                         <tal:block condition="python: not filter.title and filter.name" content="filter/name"></tal:block>
+                         <tal:block condition="python: not filter.title and not filter.name" content="filter/value"></tal:block>
+                         <tal:block define="strike python:view.strike_filter(facet, filter)">
+                          <a href="" class="strike" tal:attributes="href string:./facet_listing?${strike}">(remove)</a>
+                         </tal:block>
+                         </span>
+                       </tal:block>
+                     </div>
+                 </div>
+                </tal:block>
             <div class="summary_subfolders">
                 <strong>Contents of subfolders:</strong>
                     <span tal:condition="python: not view.include_subfolders">
@@ -118,6 +124,7 @@
             <div metal:use-macro="view/context/batch_macros/macros/navigation" />
         </div>
         <div class="facets">
+            <form method="GET" action="./facet_listing">
             <h3>Filter results</h3>
             <!-- <p>Click filter title to show or hide</p> -->
             <p class="instructions">Click a filter below to limit listings; click headings to show/hide filter groups.</p>
@@ -135,51 +142,93 @@
                             tal:attributes="href python:view.exclude_link()"
                             >Exclude</a>]</span>
                 </div>
+                <input tal:condition="view/include_subfolders"
+                    type="hidden" name="include_subfolders"
+                    value="" />
             </div>
             <tal:block repeat="facet view/facets">
                 <div class="searchfilter">
                     <h3 tal:content="facet/title">title</h3>
-                    <div class="facetmenu" tal:condition="python: not facet.use_vocabulary">
-                        <form>
-                            <input type="text" name="facet.text" value="" />
-                            <tal:block repeat="pair view/applied_filters">
-                                <input type="hidden" name="" value=""
-                                    tal:condition="python:pair[0] != facet"
-                                    tal:attributes="name python:'facet.'+pair[0].name;
-                                                    value python: pair[1].name or pair[1].value;" />
-                            </tal:block>
-                            <input tal:condition="view/include_subfolders"
-                                type="hidden" name="include_subfolders"
-                                value="" />
+                    <div class="options">
+                        <div class="facetmenu" tal:condition="python: not facet.use_vocabulary">
+                            <input type="text" name="facet.text" value="" tal:attributes="value view/applied_text" />
                             <br />
-                            <input type="submit" />
-                        </form>
-                    </div>
-                    <ul class="facetmenu">
-                        <tal:block repeat="filter python:view.filters_for(facet)">
-                        <li tal:define="count python:view.count(facet,filter);"
-                            tal:condition="python:not view.is_active_filter(facet,filter) and (count > 0)">
-                            <a class="filterchoice" href="#" 
-                                tal:attributes="href python:view.filter_link(facet, filter)"
-                                tal:content="filter/title">filter title</a>
-                                <span class="filtercount">
-                                    (<tal:block content="count">#</tal:block>)
-                                </span>
-                        </li>
-                        <li class="active_filter" tal:condition="python: view.is_active_filter(facet,filter)">
-                            <span tal:content="filter/title">filter title</span>
-                            <tal:block
-                                define="strike python:view.strike_filter(facet, filter)">
-                              <a 
-                                href=""
-                                class="strike" 
-                                tal:attributes="href string:./facet_listing?${strike}">(remove)</a>
+                            <input type="submit" value="Apply filter" />
+                        </div>
+                        <ul class="facetmenu">
+                            <tal:block repeat="filter python:view.narrow_filters(facet)">
+                                <tal:block define="activefilter python:view.is_active_filter(facet,filter);
+                                                   facetname python:facet.name;
+                                                   filtername python:filter.name;">
+                                <li tal:define="count python:view.count(facet,filter);"
+                                    tal:condition="python:not view.is_active_filter(facet,filter)">
+                                    <a class="filterchoice" href="#" 
+                                        tal:attributes="href python:view.filter_link(facet, filter)"
+                                        tal:content="filter/title">filter title</a>
+                                        <span class="filtercount">
+                                            (<tal:block content="count">#</tal:block>)
+                                        </span>
+                                    <input type="checkbox" name="" value=""
+                                           tal:attributes="name string:facet.${facetname};
+                                                           value string:${filtername}" />
+                                </li>
+                                <li class="active_filter" tal:condition="python: view.is_active_filter(facet,filter)">
+                                    <span tal:content="filter/title">filter title</span>
+                                    <tal:block
+                                        define="strike python:view.strike_filter(facet, filter)">
+                                      <a 
+                                        href=""
+                                        class="strike" 
+                                        tal:attributes="href string:./facet_listing?${strike}">(remove)</a>
+                                    </tal:block>
+                                    <input type="checkbox" name="" value="" checked="checked"
+                                           tal:attributes="name string:facet.${facetname};
+                                                           value string:${filtername}" />
+                                </li>
+                                </tal:block>
                             </tal:block>
-                        </li>
-                        </tal:block>
-                    </ul>
+                        </ul>
+                        <div class="morefilters"
+                             tal:define="filters python:view.expand_filters(facet)"
+                             tal:condition="filters">
+                            <h4>+ <span class="label">More</span></h4>
+                            <h5>Expand or change filters.</h5>
+                            <ul class="facetmenu">
+                              <tal:block repeat="filter filters">
+                                <tal:block define="activefilter python:view.is_active_filter(facet,filter);
+                                                   facetname python:facet.name;
+                                                   filtername python:filter.name;">
+                                 <li tal:condition="python: not activefilter">
+                                    <a class="filterchoice" href="#" 
+                                        tal:attributes="href python:view.filter_link(facet, filter)"
+                                        tal:content="filter/title">filter title</a>
+                                    <input type="checkbox" name="" value=""
+                                           tal:attributes="name string:facet.${facetname};
+                                                           value string:${filtername}" />
+                                 </li>
+                                 <li class="active_filter"
+                                    tal:condition="python: activefilter">
+                                    <span tal:content="filter/title">filter title</span>
+                                    <tal:block
+                                        define="strike python:view.strike_filter(facet, filter)">
+                                        <a 
+                                        href=""
+                                        class="strike" 
+                                        tal:attributes="href string:./facet_listing?${strike}">(remove)</a>
+                                    </tal:block>
+                                    <input type="checkbox" name="" value="" checked="checked"
+                                           tal:attributes="name string:facet.${facetname};
+                                                           value string:${filtername}" />
+                                 </li>
+                                </tal:block>
+                              </tal:block>
+                            </ul>
+                        </div>
+                    </div>
                 </div>
             </tal:block>
+            <input type="submit" value="Apply filters" />
+            </form>
         </div>
         <div class="listing_bottom_navigation">
         </div>

@@ -1,6 +1,8 @@
 import urllib
 
 from zope.component import queryUtility, IFactory, ComponentLookupError
+from zope.interface import implements
+from zope.schema.fieldproperty import FieldProperty
 from Products.Five import BrowserView
 from Products.CMFPlone.PloneBatch import Batch
 
@@ -11,6 +13,28 @@ from plone.app.folderui.utils import dottedname
 from plone.app.folderui.listing import FacetedListing
 
 
+from interfaces import IFacetState
+
+
+class FacetState(object):
+    """given query state for a single given facet"""
+    implements(IFacetState)
+    
+    facet = FieldProperty(IFacetState['facet'])
+    conjuntions = FieldProperty(IFacetState['conjunction'])
+    
+    @property
+    def name(self):
+        if not self.facet and not self.facet.name:
+            return None
+        return self.facet.name
+    
+    def __init__(self, facet, filters=()):
+        self.conjunction = 'OR' #default
+        self.facet = facet
+        self.filters = tuple(filters)
+
+
 def count_sort_cmp(a,b):
     if a>b: return 0
 
@@ -19,12 +43,20 @@ class ListingView(BrowserView):
     
     def __init__(self, context, request):
         BrowserView.__init__(self, context, request)
+        self._request_fixups()
         self.load_filter_state()
         query = self.compose_from_query_state()
         self.include_subfolders = 'include_subfolders' in request
         self.provider = FacetedListing(self.context,
             query,
             self.include_subfolders)
+        self._sorted_filters = {}
+    
+    def _request_fixups(self):
+        if 'facet.text' in self.request.form:
+            v = self.request.form.get('facet.text', None)
+            if not v:
+                del(self.request.form['facet.text'])
     
     @property
     def facets(self):
@@ -52,17 +84,34 @@ class ListingView(BrowserView):
     
     def filters_for(self, facet, cmpfn=None):
         """sorted filters for facet"""
-        if cmpfn is None:
-            #default, sort filter links by most hits
-            cmpfn = lambda a,b: cmp(self.count(facet, b), self.count(facet, a))
-        return sorted(facet(self.context), cmpfn)
+        if (facet.name, cmpfn) not in self._sorted_filters:
+            if cmpfn is None:
+                #default, sort filter links by most hits
+                cmpfn = lambda a,b: cmp(self.count(facet, b), self.count(facet, a))
+            self._sorted_filters[(facet.name,cmpfn)] = sorted(
+                facet(self.context), cmpfn)
+        return self._sorted_filters[(facet.name, cmpfn)]
+    
+    def narrow_filters(self, facet):
+        """filters that can actively narrow the current result (count>0)"""
+        return [f for f in self.filters_for(facet) if self.count(facet,f)>0]
+    
+    def expand_filters(self, facet):
+        """filters that can modify or expand a result, not narrow (count==0)"""
+        return [f for f in self.filters_for(facet) if self.count(facet,f)==0]
     
     def compose_from_query_state(self):
         """get composed query from current filter state"""
         q = ComposedQuery()
-        for facet,filter_spec in self._state.values():
-            query_filter = filter_spec() #make IQueryFilter object
-            q += query_filter               #combine to composed query
+        for state in self._state.values():
+            if len(state.filters) == 1:
+                query_filter = state.filters[0]() #make IQueryFilter object
+                q += query_filter #add filter to composed query
+            else:
+                for spec in state.filters:
+                    query_filter = spec()
+                    query_filter.conjunction = state.conjunction #AND/OR
+                    q += query_filter
         return q
     
     def _facet_query(self):
@@ -70,13 +119,24 @@ class ListingView(BrowserView):
             self.request.items() if k.startswith('facet.')])
     
     def applied_filters(self):
-        return self._state.values() #list of tuples of (facet, filter)
+        return self._state.values() #list of FacetState objects
+    
+    def applied_text(self):
+        """get text for full text filter value, or return empty string"""
+        if 'text' in self._state:
+            state = self._state['text']
+            return str(state.filters[0].value)
+        return ''
+    
+    def _get_conjunction(self, facet_name):
+        return 'OR' #TODO: make this obey form vars from request for AND/OR
     
     def load_filter_state(self):
         self._state = {}
         all_facets = queryUtility(IFacetSettings)
         facet_query = self._facet_query()
         for facet_name, filter_name in facet_query.items():
+                
             if facet_name in all_facets:
                 facet = all_facets[facet_name]
                 if not facet.use_vocabulary:
@@ -86,23 +146,38 @@ class ListingView(BrowserView):
                     if factory is None:
                         raise ComponentLookupError('no filter factory')
                     filter_spec = factory(value=filter_name, index=facet.index)
-                    self._state[facet_name] = (facet, filter_spec)
+                    self._state[facet_name] = FacetState(facet, (filter_spec,))
                     continue
                 vocabulary = facet(self.context)
+                if isinstance(filter_name, list):
+                    #list of multiple filter name values
+                    conjunction = self._get_conjunction(facet_name)
+                    specs = tuple([vocabulary.getTerm(v) for v in filter_name])
+                    self._state[facet_name] = FacetState(facet, specs)
+                    #
+                    #   TODO: make multiple filter specs.
+                    #   TODO: refactor state value tuple to contain
+                    #            1..* filter_spec
+                    #   TODO: refactor composed_from_query_state accordingly
+                    #   TODO: refactor summary display accordingly
+                    
                 if filter_name in vocabulary:
                     filter_spec = vocabulary.getTerm(filter_name)
-                    self._state[facet_name] = (facet, filter_spec)
+                    self._state[facet_name] = FacetState(facet, (filter_spec,))
                 elif str(filter_name) in vocabulary.by_token:
                     filter_spec = vocabulary.getTermByToken(str(filter_name))
-                    self._state[facet_name] = (facet, filter_spec)
+                    self._state[facet_name] = FacetState(facet, (filter_spec,))
     
     def facet_state_querystring(self):
         """make base querystring from current facet state"""
         query = {}
-        for facet,filter_spec in self._state.values():
-            k = 'facet.%s' % facet.name
-            query[k] = filter_spec.name or str(filter_spec.value)
-        return urllib.urlencode(query)
+        for state in self._state.values():
+            k = 'facet.%s' % state.name
+            v = []
+            for spec in state.filters:
+                v.append(spec.name or str(spec.value))
+            query[k] = v
+        return urllib.urlencode(query, doseq=True)
     
     def include_link(self):
         """link to include subfolders"""
@@ -124,8 +199,8 @@ class ListingView(BrowserView):
         """
         base = self.facet_state_querystring()
         if ('facet.%s' % facet.name) in base:
-            previous_filter = self._state[facet.name][1]
-            base = self.strike_filter(facet, previous_filter)
+            for previous_filter in self._state[facet.name].filters:
+                base = self.strike_filter(facet, previous_filter, qs=base)
             ## TODO: assumes only one link per facet is possible
         qs = self._link_fragment(facet,filter)
         if base:
@@ -134,13 +209,14 @@ class ListingView(BrowserView):
             qs = '%s&include_subfolders' % qs
         return 'facet_listing?%s' % qs
     
-    def strike_filter(self, facet, filter):
+    def strike_filter(self, facet, filter, qs=None):
         """
         Make a URL that includes all filter state in query string EXCEPT
         the facet/filter combination passed, with the effect returning a
         link that removes the filter.
         """
-        qs = self.facet_state_querystring()
+        if qs is None:
+            qs = self.facet_state_querystring()
         rem = urllib.urlencode({('facet.%s' % facet.name) : filter.name})
         ## remove current filter and normalize remaining querystring:
         if rem not in qs:
