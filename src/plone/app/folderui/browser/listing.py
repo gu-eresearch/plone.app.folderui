@@ -20,8 +20,7 @@ class FacetState(object):
     """given query state for a single given facet"""
     implements(IFacetState)
     
-    facet = FieldProperty(IFacetState['facet'])
-    conjuntions = FieldProperty(IFacetState['conjunction'])
+    conjunction = FieldProperty(IFacetState['conjunction'])
     
     @property
     def name(self):

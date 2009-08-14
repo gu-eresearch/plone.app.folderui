@@ -31,7 +31,8 @@ dn_before = lambda dt,n: (dt - timedelta(days=n)).date()
 dn_after = lambda dt,n: (dt - timedelta(days=n)).date()
 days_before = lambda dt,n: datetime(*(list(dn_before(dt,n).timetuple())))
 days_after = lambda dt,n: datetime(*(list(dn_after(dt,n).timetuple())+[23,59]))
-
+day_start = lambda dt: datetime(*(dt.date().timetuple())[0:7])
+day_end = lambda dt: datetime(*(dt.date().timetuple()[0:3]+(23,59)))
 
 class DateRange(object):
     """Date range description object"""
@@ -77,6 +78,8 @@ class DateRangeFactory(object):
 
 RANGES = {
     'This month'    : DateRangeFactory(month_start, month_end),
+    'This week'     : DateRangeFactory(week_start, week_end),
+    'Today'         : DateRangeFactory(day_start, day_end),
     'Past'          : DateRangeFactory(None, lambda v: v), # up to current
 }
 
