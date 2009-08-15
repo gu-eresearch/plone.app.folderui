@@ -73,6 +73,10 @@ div.filter_summary span.filtername {
     clear:both;
 }
 
+div.filter_summary span.filtername span.conjunction {
+    color:#aaa;
+}
+
 div.summary_filters {
     float:left;
 }

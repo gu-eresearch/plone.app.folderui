@@ -6,7 +6,6 @@ from zope.schema.fieldproperty import FieldProperty
 from Products.Five import BrowserView
 from Products.CMFPlone.PloneBatch import Batch
 
-#from plone.app.folderui import defaults #triggers registration: TODO: move reg.
 from plone.app.folderui.interfaces import IFacetSettings, IFilterSpecification
 from plone.app.folderui.query import ComposedQuery
 from plone.app.folderui.utils import dottedname
@@ -127,7 +126,17 @@ class ListingView(BrowserView):
             return str(state.filters[0].value)
         return ''
     
-    def _get_conjunction(self, facet_name):
+    def _conjunction_query(self):
+        if not hasattr(self, '_conjunction'):
+            self._conjunction = dict([(k.replace(
+                'conjunction.',''),v) for k,v in
+                self.request.items() if k.startswith('conjunction.')])
+        return self._conjunction
+    
+    def get_conjunction(self, facet_name):
+        v = self._conjunction_query().get(facet_name, None)
+        if v:
+            return v.strip().upper()
         return 'OR' #TODO: make this obey form vars from request for AND/OR
     
     def load_filter_state(self):
@@ -135,7 +144,6 @@ class ListingView(BrowserView):
         all_facets = queryUtility(IFacetSettings)
         facet_query = self._facet_query()
         for facet_name, filter_name in facet_query.items():
-                
             if facet_name in all_facets:
                 facet = all_facets[facet_name]
                 if not facet.use_vocabulary:
@@ -150,16 +158,10 @@ class ListingView(BrowserView):
                 vocabulary = facet(self.context)
                 if isinstance(filter_name, list):
                     #list of multiple filter name values
-                    conjunction = self._get_conjunction(facet_name)
                     specs = tuple([vocabulary.getTerm(v) for v in filter_name])
-                    self._state[facet_name] = FacetState(facet, specs)
-                    #
-                    #   TODO: make multiple filter specs.
-                    #   TODO: refactor state value tuple to contain
-                    #            1..* filter_spec
-                    #   TODO: refactor composed_from_query_state accordingly
-                    #   TODO: refactor summary display accordingly
-                    
+                    state = FacetState(facet, specs)
+                    state.conjunction = self.get_conjunction(facet_name)
+                    self._state[facet_name] = state
                 if filter_name in vocabulary:
                     filter_spec = vocabulary.getTerm(filter_name)
                     self._state[facet_name] = FacetState(facet, (filter_spec,))
@@ -200,7 +202,6 @@ class ListingView(BrowserView):
         if ('facet.%s' % facet.name) in base:
             for previous_filter in self._state[facet.name].filters:
                 base = self.strike_filter(facet, previous_filter, qs=base)
-            ## TODO: assumes only one link per facet is possible
         qs = self._link_fragment(facet,filter)
         if base:
             qs = '%s&%s' % (base, qs)
