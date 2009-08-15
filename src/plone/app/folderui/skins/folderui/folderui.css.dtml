@@ -123,6 +123,15 @@ div.searchfilter h3 { background-color:#666;
     padding-left:0.2em;
 }
 
+div.searchfilter div.conjunction_choice {
+    border-bottom:1px solid #ddd;
+    background-color:#eef;
+    color:#78d;
+    font-size:0.8em;
+    font-style:italic;
+    padding:0.2em 0.5em;
+}
+
 div.searchfilter ul.facetmenu {
     list-style:none;
     padding:0.3em;
@@ -141,7 +150,6 @@ div.searchfilter ul.facetmenu li {
 div.searchfilter ul.facetmenu li.active_filter {
     font-weight:bold;
     background-color:#ffa;
-
 }
 
 div.searchfilter ul.facetmenu li a {
