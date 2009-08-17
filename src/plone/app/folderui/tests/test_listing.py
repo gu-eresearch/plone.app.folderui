@@ -1,11 +1,12 @@
 import unittest
 
-#from zope.component import queryUtility, IFactory
+from zope.component import queryUtility, IFactory
 
-from plone.app.folderui.interfaces import IFacetSpecification
+from plone.app.folderui.interfaces import IFacetSpecification, IFacetSettings
 from plone.app.folderui.listing import FacetedListing
+from plone.app.folderui.querys import ComposedQuery
 
-from base import BaseTestCase
+from base import BaseTestCases
 
 
 class TestListing(BaseTestCase):
@@ -76,6 +77,29 @@ class TestListing(BaseTestCase):
                 listing_all.result]
         assert o not in [b.getObject() for b in 
                 listing_flat.result]
+    
+    def test_multiset_and_or(self):
+        listing = FacetedListing(self.target)
+        assert len(listing.result) == 6
+        facets = queryUtility(IFacetSettings)
+        categories = facets['categories']
+        filters = categories(self.target)
+        spec1 = [f for f in filters if f.name=='news item'][0]
+        spec2 = [f for f in filters if f.name=='one'][0]
+        qf1 = spec1(self.target) #query filter
+        listing1 = FacetedListing(self.target, ComposedQuery(filters=[qf1]))
+        assert len(listing1.result) == 2
+        qf2 = spec2(self.target) #query filter
+        listing2 = FacetedListing(self.target, ComposedQuery(filters=[qf2]))
+        assert len(listing2.result) == 2
+        qf1.conjunction = qf2.conjunction = 'OR'
+        listing_or = FacetedListing(self.target,
+            ComposedQuery(filters=[qf1, qf2]))
+        asset len(listing_or.result) == 2
+        qf1.conjunction = qf2.conjunction = 'AND'
+        listing_and = FacetedListing(self.target,
+            ComposedQuery(filters=[qf1, qf2]))
+        assert len(listing_and) == 1
 
 
 def test_suite():
