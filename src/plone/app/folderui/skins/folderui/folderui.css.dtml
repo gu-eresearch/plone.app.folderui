@@ -115,19 +115,21 @@ div.facets p.instructions {
     font-family:Times New Roman,Serif;
 }
 
-div.searchfilter h3 { background-color:#666;
+div.searchfilter h3 { 
+    background-color:#444;
     color:#fff;
-    font-size:125%;
+    font-size:110%;
     font-weight:bold;
     margin:0;
-    padding-left:0.2em;
+    padding:0.2em 0.5em;
+    border-bottom
 }
 
 div.searchfilter div.conjunction_choice {
     border-bottom:1px solid #ddd;
     background-color:#eef;
     color:#78d;
-    font-size:0.8em;
+    font-size:0.9em;
     font-style:italic;
     padding:0.2em 0.5em;
 }

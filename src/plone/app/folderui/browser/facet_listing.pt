@@ -158,7 +158,7 @@
                             tal:condition="python: facet.use_vocabulary and facet.multiset"
                             tal:define="keyname string:conjunction.${facet/name};
                                         conjunction python:view.get_conjunction(facet.name)">
-                             Checkbox behavior:
+                             Checkbox behavior: <br />
                              <input type="radio" value="OR" checked="checked" name="" tal:attributes="name keyname" tal:condition="python:conjunction=='OR'" />
                              <input type="radio" value="OR" name="" tal:attributes="name keyname" tal:condition="python:conjunction=='AND'"/> OR |
                              <input type="radio" value="AND" checked="checked" name="" tal:attributes="name keyname" tal:condition="python:conjunction=='AND'" />

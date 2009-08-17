@@ -13,5 +13,14 @@
         permission="zope.Public"
         template="facet_listing.pt"
         />
+    
+    <browser:page
+        name="facet_rss"
+        for="Products.CMFCore.interfaces._content.IFolderish"
+        class=".listing.ListingView"
+        permission="zope.Public"
+        template="facet_rss.pt"
+        />
+
 
 </configure>

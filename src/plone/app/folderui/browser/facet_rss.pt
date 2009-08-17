@@ -1,0 +1,44 @@
+<rss version="2.0"
+    xmlns:dc="http://purl.org/dc/elements/1.1/"
+    xmlns:opensearch="http://a9.com/-/spec/opensearch/1.1/"
+    xmlns:atom="http://www.w3.org/2005/Atom"
+    xmlns:tal="http://xml.zope.org/namespaces/tal"
+    xmlns:metal="http://xml.zope.org/namespaces/metal"
+    >
+    <channel
+        tal:define="portal_url view/context/portal_url/getPortalPath;
+                    batch view/batch;"
+        >
+        <title>Filtered folder listing</title>
+        <!-- describe filters and limits, context of feed in description -->
+        <description>
+            Items in folder (including subfolder contents): /path/to/folder.
+            Applied filters:
+            Text search: Africa
+            Categories: Peace
+        </description>
+        <opensearch:totalResults tal:content="python:batch.sequence_length">101</opensearch:totalResults>
+        <opensearch:startIndex tal:content="batch/start">51</opensearch:startIndex>
+        <opensearch:itemsPerPage tal:content="python:batch.length">50</opensearch:itemsPerPage>
+        <opensearch:Query role="request" searchTerms="SOME SEARCH TERM" startPage="1" />
+        <generator>plone.app.folderui</generator>
+        <item tal:repeat="item view/batch">
+         <tal:block define="item_id item/getId|item/id;
+                            item_title item/Title;
+                            item_type item/portal_type;
+                            item_type_title item/Type;
+                            item_url item/getURL;
+                            item_start item/start/ISO|item/StartDate|nothing;
+                            item_end item/end/ISO|item/EndDate|nothing;
+            ">
+            <title tal:content="item/Title">TITLE</title>
+            <link tal:content="item_url"></link>
+            <description tal:content="item/Description">
+                DESCRIPTION HERE
+            </description>
+            <dc:creator tal:content="item/Creator">CREATOR</dc:creator>
+            <pubDate tal:content="item/modified">MODIFIED</pubDate>
+         </tal:block>
+        </item>
+    </channel>
+</rss>
