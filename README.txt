@@ -7,7 +7,7 @@ Overview
 This package contains components for the faceted browsing and searching of
 folders in Plone.
 
- * NOTE: THIS PACKAGE IS IN EARLY DEVELOPMENT (June 2009).
+This package is in early development: YMMV, feedback appreciated.
 
 Feedback
 --------

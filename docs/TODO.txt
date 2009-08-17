@@ -1,18 +1,19 @@
 
-TODO for 0.03 to 0.1 releases:
-------------------------------
+TODO for 0.1 release:
+---------------------
 
-0.03 release TODO:
-------------------
 
-  Major priorities, goals:
-    (1) global configuration
-    
-    (2) multi-set facets (more than one option per index either AND/OR
-        within the same index).
+0.1 release TODO:
+-----------------
+
+  Major priorities:
+  
+  (1) enhance UI interactivity for multiset filter selection.
+  
+  (2) Global configuration of facets and a way to spell out per-path overrides.
 
   -----
-  
+
   * Configuration facets-by-path persistence (local utilty) and front-end
     config form view.  Global configuration should be simple, and anything
     beyond configuring site-wide defaults may require entering text into 
@@ -27,30 +28,7 @@ TODO for 0.03 to 0.1 releases:
     a simple integration test on portal, subfolder (use self.portal and
     self.target from base test).
 
-  * Tests for multiset (multiple choices AND/OR within single facet/index)
-    queries (and any fixes to query runner or listing provider if tests
-    dictate).
-
-  * Noscript HTML form submission UI for multiset queries within same facet. 
-    This will be one form per page.
-
-  * Need some UI tweaks to allow someone to both narrow their search in a 
-    facet and change their search for a single choice in such a way that also
-    is consistent with the plan for multi-set UI.
-
   * Omit from display empty facets with no displayed filters.
-
-
-0.1 release TODO:
------------------
-
-  Major priorities:
-  
-  (1) enhance UI interactivity for multiset filter selection.
-  
-  (2) Global configuration of facets and a way to spell out per-path overrides.
-
-  -----
 
   * Progressive javascript enhancements for multiset selection (integrate
     javascript from mockup doc, improve).

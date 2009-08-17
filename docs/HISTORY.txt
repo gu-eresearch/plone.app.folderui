@@ -1,6 +1,42 @@
 Changelog
 =========
 
+0.03
+----
+
+  This release adds multiple selection from facets: select multiple filters
+  within a single facet or index, and join them with an AND or OR
+  conjunction.  Two types of mutliple-selection facets are possible:
+  
+  (a) "disjoint" facets: content items can only have one possible choice,
+        muliple selection implies an OR conjunction -- AND is non-sequitur.
+  
+  (b) "mutltiset" facets: content items can have more than one value, so 
+        conjunction is user-selectable.
+
+  Changes:
+  --------
+  
+  * Tests for multiset (multiple choices AND/OR within single facet/index)
+    queries (and any fixes to query runner or listing provider if tests
+    dictate).
+  
+  * Noscript HTML form submission UI for multiset queries within same facet. 
+    This will be one form per page.
+  
+  * Javascript enhancements for multiple-selection.
+  
+  * RSS feed template for results, partially implements OpenSearch
+    batching mechanisms, at least well enough to provide batching metadata.
+    It is expected that this can serve as one component needed for
+    "live filtering" single-page AJAX re-loading of results in future
+    releases.
+  
+  * UI tweaks to allow someone to both narrow their search in a 
+    facet and change their search for a single choice in such a way that also
+    is consistent with multi-set UI.
+
+
 0.02
 ----
 

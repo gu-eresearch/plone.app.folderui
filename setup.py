@@ -1,7 +1,7 @@
 from setuptools import setup, find_packages
 import os
 
-version = '0.01'
+version = '0.03'
 
 def read(*rnames):
     '''read files given a sequence of path segments'''
