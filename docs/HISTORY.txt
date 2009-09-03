@@ -1,6 +1,8 @@
 Changelog
 =========
 
+  * fix: conjunctions stripped from remove-filter links (bug), now included.
+
 0.03
 ----
 

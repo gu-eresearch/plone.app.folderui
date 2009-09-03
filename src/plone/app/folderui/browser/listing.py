@@ -133,6 +133,13 @@ class ListingView(BrowserView):
                 self.request.items() if k.startswith('conjunction.')])
         return self._conjunction
     
+    def _conjunction_fragment(self):
+        fragment = dict(
+                [('conjunction.%s' % k, v) for k,v in 
+                    self._conjunction_query().items()]
+            )
+        return urllib.urlencode(fragment)
+    
     def get_conjunction(self, facet_name):
         v = self._conjunction_query().get(facet_name, None)
         if v:
@@ -229,6 +236,9 @@ class ListingView(BrowserView):
             qs = qs[:-1]
         if self.include_subfolders:
             qs = '%s&include_subfolders' % qs
+        conj = self._conjunction_fragment()
+        if conj and qs:
+            return '%s&%s' % (qs, conj)
         return qs
     
     def is_active_filter(self, facet, filter):
