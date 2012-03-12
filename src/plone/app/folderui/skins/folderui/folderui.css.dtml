@@ -1,5 +1,6 @@
 div.folder_listing {
     float:left;
+    display: inline-block;
     width:65%;
 }
 
@@ -7,6 +8,7 @@ div.facets {
     width:32%;
     border 1px solid #ddd;
     float:right;
+    display: inline-block;
 }
 
 div.result_summary {
@@ -142,11 +144,12 @@ div.searchfilter ul.facetmenu {
 div.searchfilter ul.facetmenu li {
     list-style-type:none;
     margin:0.3em;
-    margin-left:-1.2em;
+    /* margin-left:-1.2em; */
     padding:0.1em;
     line-height:0.9em;
     clear:both;
     border-bottom:1px solid #eee;
+    display: list-item;
 }
 
 div.searchfilter ul.facetmenu li.active_filter {
@@ -162,7 +165,7 @@ div.searchfilter ul.facetmenu li a {
 
 ul.facetmenu li input { /* checkboxes */
     float:right;
-    margin-top:-1.1em;
+    /* margin-top:-1.1em; */
 }
 
 div.searchfilter span.act {
