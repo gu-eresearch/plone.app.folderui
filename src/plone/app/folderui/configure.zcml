@@ -57,8 +57,8 @@
   
   <!-- event subscriber registration: --> 
   <subscriber
-    for="Products.Archetypes.interfaces._base.IBaseContent
-         zope.app.container.interfaces.IObjectModifiedEvent"
+    for="Products.Archetypes.interfaces.IBaseContent
+         zope.lifecycleevent.interfaces.IObjectModifiedEvent"
     handler=".utils.modify_handler"
     />
 
