@@ -1,14 +1,14 @@
 import urllib
 
-from zope.component import queryUtility, IFactory, ComponentLookupError
+from zope.component import queryUtility, ComponentLookupError, queryAdapter
 from zope.interface import implements
 from zope.schema.fieldproperty import FieldProperty
 from Products.Five import BrowserView
 from Products.CMFPlone.PloneBatch import Batch
 
-from plone.app.folderui.interfaces import IFacetSettings, IFilterSpecification
+from plone.app.folderui.interfaces import (IFacetSettings,
+                                           IFilterSpecificationFactory)
 from plone.app.folderui.query import ComposedQuery
-from plone.app.folderui.utils import dottedname
 from plone.app.folderui.listing import FacetedListing
 
 
@@ -155,10 +155,10 @@ class ListingView(BrowserView):
                 facet = all_facets[facet_name]
                 if not facet.use_vocabulary:
                     # no vocab, so create filter spec on fly instead of lookup
-                    factory = queryUtility(IFactory,
-                        dottedname(IFilterSpecification))
+                    factory = queryAdapter(facet, IFilterSpecificationFactory)
                     if factory is None:
                         raise ComponentLookupError('no filter factory')
+                    # TODO: this assumes, we are dealing with catalog facets.
                     filter_spec = factory(value=filter_name, index=facet.index)
                     self._state[facet_name] = FacetState(facet, (filter_spec,))
                     continue

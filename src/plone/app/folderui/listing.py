@@ -44,6 +44,7 @@ class FacetedListing(object):
     @property
     def facets(self):
         if not hasattr(self, '_facets'):
+            # TODO: here we get the list of facets...
             facets = queryUtility(IFacetSettings)
             if facets is None:
                 return []

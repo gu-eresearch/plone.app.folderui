@@ -1,13 +1,10 @@
 from zope.interface import implements, alsoProvides
-from zope.component import ( getGlobalSiteManager, queryUtility, IFactory, 
-    ComponentLookupError, )
-from zope.schema.interfaces import IVocabularyTokenized, IVocabularyFactory
+from zope.component import (queryUtility,
+    ComponentLookupError, queryAdapter)
+from zope.schema.interfaces import IVocabularyFactory
 from zope.schema.vocabulary import SimpleVocabulary, SimpleTerm, VocabularyRegistry
-from zope.schema import getFieldsInOrder
-from zope.schema.fieldproperty import FieldProperty
 from Products.CMFCore.utils import getToolByName
-from interfaces import ITitleLookup, IFilterSpecification
-from utils import dottedname
+from interfaces import ITitleLookup, IFilterSpecification, IFilterSpecificationFactory, IFacetSettings
 
 
 titlecase = lambda v,context: v.title()
@@ -38,7 +35,10 @@ class UniqueValuesFactory(object):
         self.titlefn = titlefn #should be 
     
     def _mkterm(self, value, title=None):
-        term_factory = queryUtility(IFactory, dottedname(IFilterSpecification))
+        facets = queryUtility(IFacetSettings)
+        facet = facets[self.index]  # should have some sort of name here, index only applies to CatalogFacets
+        term_factory = queryAdapter(facet, IFilterSpecificationFactory)
+        # term_factory = queryUtility(IFactory, dottedname(ICatalogFilterSpecification))
         if term_factory is None:
             raise ComponentLookupError('cannot find factory for filter term')
         t = term_factory()

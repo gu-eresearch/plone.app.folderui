@@ -4,19 +4,21 @@ facets configuration.
 """
 
 from zope.interface import implements
-from zope.component import getGlobalSiteManager, queryUtility, IFactory
+from zope.component import queryUtility, queryAdapter
+from zope.component import getUtilitiesFor
 from zope.schema import getFieldsInOrder, getFieldNames
 from zope.schema.fieldproperty import FieldProperty
 from zope.schema.interfaces import IVocabularyFactory
 from zope.schema.vocabulary import SimpleVocabulary
 from BTrees.IIBTree import IISet, intersection
 
-from interfaces import ( IFacetPathRules, IFacetSettings, IFacetSpecification,
-    IQueryFilter, IFilterSpecification, IDateRange, IDateRangeFactory,
-    ISetCacheTools, IQueryResults, FACETS_ALL, is_daterange, )
-import vocab #triggers utility registration, TODO: move reg. to ZCML
+from interfaces import (IFacetPathRules, IFacetSettings, IFacetSpecification,
+    IQueryFilterFactory, IFilterSpecification, IDateRange, IDateRangeFactory,
+    ISetCacheTools, IQueryResults, FACETS_ALL, is_daterange,
+    ICatalogFilterSpecification, ICatalogFacetSpecification)
+import vocab  # triggers utility registration, TODO: move reg. to ZCML
 from daterange import RANGES
-from utils import dottedname, sitemanager_for
+from utils import sitemanager_for
 from catalog import AdvancedQueryRunner
 from query import date_range_filter
 
@@ -76,8 +78,8 @@ class BaseFilterSpecification(object):
         runner = AdvancedQueryRunner(context)
         result = runner(qf)
         setid = result.setid
-        cache_tools.set_cache[setid] = result.frozen
-        cache_tools.filter_setid_cache[unique_name] = setid
+        #cache_tools.set_cache[setid] = result.frozen
+        #cache_tools.filter_setid_cache[unique_name] = setid
         if intersect is None:
             return len(result)
         if isinstance(intersect, IISet):
@@ -89,7 +91,7 @@ class BaseFilterSpecification(object):
         if IDateRangeFactory.providedBy(v) or IDateRange.providedBy(v):
             qf = date_range_filter(v)
         else:
-            factory = queryUtility(IFactory, dottedname(IQueryFilter))
+            factory = queryAdapter(self, IQueryFilterFactory)
             qf = factory()
             qf.value = v
             qf.query_range = self.query_range
@@ -101,6 +103,11 @@ class BaseFilterSpecification(object):
         return qf
 
 
+class CatalogFilterSpecification(BaseFilterSpecification):
+
+    implements(ICatalogFilterSpecification)
+
+    
 class BaseFacetSpecification(object):
     """Base (transient) facet specification object"""
     
@@ -138,6 +145,11 @@ class BaseFacetSpecification(object):
         return SimpleVocabulary(terms=self.filters) #static vocab via filters
 
 
+class CatalogFacetSpecification(BaseFacetSpecification):
+
+    implements(ICatalogFacetSpecification)
+
+
 class BaseSettings(object):
     """
     Default transient mapping of configuration, mapping facet names to 
@@ -145,18 +157,29 @@ class BaseSettings(object):
     """
     
     implements(IFacetSettings)
+
+    __facets = None
+
+    @property
+    def _facets(self):
+        if self.__facets is None:
+            self.__facets = {}
+            # getAllUtilitiesRegisteredFor ... returns overriden utilites (no names though)
+            for name, comp in getUtilitiesFor(IFacetSpecification):
+                self.__facets[comp.name] = comp
+        return self.__facets
     
-    def __init__(self, *args):
-        self._facets = {} # facet name (str) --> IFacetSpecification
-        for arg in args:
-            if IFacetSpecification.providedBy(arg):
-                self._facets[arg.name] = arg
+    # def __init__(self, *args):
+    #     self._facets = {} # facet name (str) --> IFacetSpecification
+    #     for arg in args:
+    #         if IFacetSpecification.providedBy(arg):
+    #             self._facets[arg.name] = arg
     
     def __getitem__(self, name):
         return self._facets.__getitem__(name)
     
     def __setitem__(self, name, value):
-        self._facets.__setitem__(k,v)
+        self._facets.__setitem__(name, value)
     
     def __contains__(self, name):
         return self._facets.__contains__(name)
@@ -251,14 +274,14 @@ class BasePathRules(object):
 
 
 ## factories for config
-def facets(*args):
-    return BaseSettings(*args)
+# def facets(*args):
+#     return BaseSettings(*args)
 
 
 def facet(**kwargs):
     if 'name' not in kwargs:
         raise ValueError('name argument is required')
-    return BaseFacetSpecification(**kwargs)
+    return CatalogFacetSpecification(**kwargs)
 
 
 def daterange_facet(**kwargs):
@@ -271,7 +294,7 @@ def daterange_facet(**kwargs):
     for k,v in ranges.items():
         if not is_daterange(v):
             raise ValueError('Value is not date range or range factory.')
-        df = BaseFilterSpecification()
+        df = CatalogFilterSpecification()
         df.title = df.name = unicode(k)
         df.value = v
         f.filters.append(df)
@@ -279,46 +302,54 @@ def daterange_facet(**kwargs):
 
 
 # facets config mapping: register this as IFacetSettings utility in ZCML
-FACETS = facets(
-    facet(
-        name=u'text',
-        title=u'Text search',
-        description=u'Searchable full text.',
-        index=u'SearchableText',
-        multiset=True,
-        filters=[],
-        query_vocabulary=False,
-        use_vocabulary=False, ),
-    facet(
-        name=u'creator',
-        title=u'Creator',
-        description=u'Content created by',
-        multiset=False,
-        filters=[],
-        query_vocabulary=True, ),
-    facet(
-        name=u'type',
-        title=u'Content type',
-        index=u'Type',
-        description=u'Content type',
-        multiset=False,
-        filters=[],
-        query_vocabulary=True, ),
-    facet(
-        name=u'categories',
-        title=u'Categories',
-        index=u'Subject',
-        description=u'Categories/tags/subjects',
-        multiset=True,
-        filters=[],
-        query_vocabulary=True, ),
-    daterange_facet(
-        name=u'Modified',
-        title=u'Modification date',
-        index=u'modified',
-        description=u'Date item was modified.',
-        multiset=True,
-        ranges=RANGES,
-        query_vocabulary=False, ),
-)
+TEXT_FACET = facet(
+    name=u'text',
+    title=u'Text search',
+    description=u'Searchable full text.',
+    index=u'SearchableText',
+    multiset=True,
+    filters=[],
+    query_vocabulary=False,
+    use_vocabulary=False,
+    )
 
+CREATOR_FACET = facet(
+    name=u'Creator',
+    title=u'Creator',
+    description=u'Content created by',
+    multiset=False,
+    filters=[],
+    query_vocabulary=True,
+    )
+
+TYPE_FACET = facet(
+    name=u'Type',
+    title=u'Content type',
+    index=u'Type',
+    description=u'Content type',
+    multiset=False,
+    filters=[],
+    query_vocabulary=True,
+    )
+
+SUBJECT_FACET = facet(
+    name=u'Subject',
+    title=u'Categories',
+    index=u'Subject',
+    description=u'Categories/tags/subjects',
+    multiset=True,
+    filters=[],
+    query_vocabulary=True,
+    )
+
+MODIFIED_FACET = daterange_facet(
+    name=u'modified',
+    title=u'Modification date',
+    index=u'modified',
+    description=u'Date item was modified.',
+    multiset=True,
+    ranges=RANGES,
+    query_vocabulary=False,
+    )
+
+FACETS = BaseSettings()

@@ -21,19 +21,23 @@ def modify_handler(obj, event):
     be removed after faceted navigation removes.
     """
     catalog = getToolByName(obj, 'portal_catalog')
-    while 1:
-        rid = rid_for_object(catalog, obj)
-        if rid is None:
-            # should only happen on document creation; side-effect might be 
-            # duplicative calls to reindexObject if another handler 
-            # or code calls...
-            obj.reindexObject()
-            continue
-        break
+    rid = rid_for_object(catalog, obj)
+    if rid is None:
+        # object might still be contained within a factory ... so it can't be indexed
+        return
+    # while 1:
+    #     rid = rid_for_object(catalog, obj)
+    #     if rid is None:
+    #         # should only happen on document creation; side-effect might be 
+    #         # duplicative calls to reindexObject if another handler 
+    #         # or code calls...
+    #         obj.reindexObject()
+    #         continue
+    #     break
     set_cache_tools = queryUtility(ISetCacheTools)
-    if set_cache_tools is not None:
-        if rid not in set_cache_tools.invalidated_records:
-            set_cache_tools.invalidated_records.insert(rid)
+    # if set_cache_tools is not None:
+    #     if rid not in set_cache_tools.invalidated_records:
+    #         set_cache_tools.invalidated_records.insert(rid)
 
 
 

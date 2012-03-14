@@ -29,6 +29,7 @@ def filter_cached_set(query, context=None):
             return frozen
     return None
 
+# TODO: having troubles here with 32+bit keys. maybe switch to LOBTree etc.. variants?
 
 class PersistentRecordSetCache(IOBTree):
     """

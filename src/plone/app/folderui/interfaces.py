@@ -2,7 +2,7 @@ from zope.interface import Interface, Attribute
 from zope.interface.common.mapping import IIterableMapping, IWriteMapping
 from zope.interface.common.sequence import (ISequence,
     IUniqueMemberWriteSequence, IReadSequence,)
-from zope.schema import (Bool, Choice, Datetime, List, Object, TextLine, 
+from zope.schema import (Bool, Choice, Datetime, List, Object, TextLine,
     Text, Tuple, BytesLine, )
 from zope.schema.vocabulary import SimpleVocabulary, SimpleTerm
 from zope.schema.interfaces import ITitledTokenizedTerm, IVocabularyFactory
@@ -382,3 +382,41 @@ class ISetCacheTools(Interface):
     invalidated_records = Object(schema=IRecordInvalidationSet)
 
 
+class IFilterSpecificationFactory(Interface):
+
+    def __call__(value, facet):
+        """
+        return an FilterSpecification instance based on type of facet given.
+        """
+
+
+class ICatalogFilterSpecification(IFilterSpecification):
+    pass
+
+
+class ISparqlFilterSpecification(IFilterSpecification):
+    pass
+
+
+class ICatalogFacetSpecification(IFacetSpecification):
+    pass
+
+
+class ISparqlFacetSpecification(IFacetSpecification):
+    pass
+
+
+class IQueryFilterFactory(Interface):
+
+    def __call__(filterspec):
+        """
+        return an QueryFilter instance based on type of filterspec given.
+        """
+
+
+class ICatalogQueryFilter(IQueryFilter):
+    pass
+
+
+class ISparqlQueryFilter(IQueryFilter):
+    pass

@@ -16,20 +16,10 @@
     name="plone.app.folderui.interfaces.IQueryRunner" />
 
   <utility
-    component=".defaults.BaseFilterSpecification"
-    provides="zope.component.interfaces.IFactory"
-    name="plone.app.folderui.interfaces.IFilterSpecification" />
-  
-  <utility
     component=".query.ComposedQuery"
     provides="zope.component.interfaces.IFactory"
     name="plone.app.folderui.interfaces.IComposedQuery" />
-  
-  <utility
-    component=".query.QueryFilter"
-    provides="zope.component.interfaces.IFactory"
-    name="plone.app.folderui.interfaces.IQueryFilter" />
-  
+
   <!-- non-factory utility registrations: -->
   <utility
     component=".defaults.FACETS"
@@ -40,20 +30,51 @@
   <utility
     component=".vocab.all_creators_vfactory"
     provides="zope.schema.interfaces.IVocabularyFactory"
-    name="creator"
+    name="Creator"
     />
   
   <utility
     component=".vocab.all_categories_vfactory"
     provides="zope.schema.interfaces.IVocabularyFactory"
-    name="categories"
+    name="Subject"
     />
   
   <utility
     component=".vocab.all_types_vfactory"
     provides="zope.schema.interfaces.IVocabularyFactory"
-    name="type"
+    name="Type"
     />
+
+  <!-- register facets -->
+  <utility
+      component=".defaults.TEXT_FACET"
+      provides=".interfaces.IFacetSpecification"
+      name="text" />
+
+  <utility
+      component=".defaults.CREATOR_FACET"
+      provides=".interfaces.IFacetSpecification"
+      name="creator" />
+
+  <utility
+      component=".defaults.TYPE_FACET"
+      provides=".interfaces.IFacetSpecification"
+      name="type" />
+
+  <utility
+      component=".defaults.SUBJECT_FACET"
+      provides=".interfaces.IFacetSpecification"
+      name="subject" />
+
+  <utility
+      component=".defaults.MODIFIED_FACET"
+      provides=".interfaces.IFacetSpecification"
+      name="modified" />
+
+  <utility
+      component=".sparqldefaults.PARTICIPANT_GENDER_FACET"
+      provides=".interfaces.IFacetSpecification"
+      name="foaf_gender" />
   
   <!-- event subscriber registration: --> 
   <subscriber
@@ -61,5 +82,23 @@
          zope.lifecycleevent.interfaces.IObjectModifiedEvent"
     handler=".utils.modify_handler"
     />
+
+  <adapter
+      factory=".sparqldefaults.CatalogFilterSpecificationAdapter" />
+
+  <adapter
+      factory=".sparqldefaults.SparqlFilterSpecificationAdapter" />
+
+  <adapter
+      for=".interfaces.IDateRange"
+      factory=".sparqldefaults.CatalogQueryFilterAdapter" />
+
+  <adapter
+      for=".interfaces.ICatalogFilterSpecification"
+      factory=".sparqldefaults.CatalogQueryFilterAdapter" />
+
+  <adapter
+      factory=".sparqldefaults.SparqlQueryFilterAdapter" />
+
 
 </configure>

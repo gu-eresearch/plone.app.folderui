@@ -1,10 +1,10 @@
 from zope.interface import implements, implementer
 from zope.schema import getFieldsInOrder
 from zope.schema.fieldproperty import FieldProperty
-from zope.component import (getGlobalSiteManager, IFactory, 
+from zope.component import (IFactory, queryAdapter,
     ComponentLookupError, adapter, queryUtility, )
 from interfaces import (IQueryFilter, IComposedQuery, IDateRange,
-    IDateRangeFactory,)
+    IDateRangeFactory, ICatalogQueryFilter, IQueryFilterFactory)
 from utils import dottedname
 from datetime import datetime
 
@@ -32,9 +32,9 @@ class ComposedQuery(object):
         return new_composition
 
 
-class QueryFilter(object):
+class CatalogQueryFilter(object):
     
-    implements(IQueryFilter)
+    implements(ICatalogQueryFilter)
     
     for _fieldname, _field in getFieldsInOrder(IQueryFilter):
         locals()[_fieldname] = FieldProperty(_field)
@@ -101,9 +101,7 @@ def date_range_filter(dr):
     assert IDateRange.providedBy(dr) or IDateRangeFactory.providedBy(dr)
     if IDateRangeFactory.providedBy(dr):
         dr = dr(datetime.now())
-    factory = queryUtility(IFactory, dottedname(IQueryFilter))
+    factory = queryAdapter(dr, IQueryFilterFactory)
     if factory is None:
         return ComponentLookupError('cannot find factory for query filter')
     return factory(value=(dr.start, dr.end), query_range=dr.query_range)
-
-

@@ -121,7 +121,7 @@ class IterableCatalogResults(object):
     def setid(self):
         if not hasattr(self, '_result_set_id'):
             self._result_set_id = hash(self.frozen)
-        return self._result_set_id
+        return self._result_set_id & 0x7fffffff  # ensure 32 bits
     
     def values(self):
         """Returns LazyMap of brains (raw result from catalog)"""
