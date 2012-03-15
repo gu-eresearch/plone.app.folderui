@@ -2,13 +2,13 @@
 
 from zope.component import (getUtility, adapter, IFactory, getAdapter,
                             queryUtility)
-from zope.interface import implementer, provider, implements
+from zope.interface import implementer, implements
 from zope.schema import getFieldsInOrder
 from zope.schema.fieldproperty import FieldProperty
 from zope.schema.vocabulary import SimpleVocabulary
 from org.ausnc.rdf.interfaces import IORDF
 from Products.CMFCore.utils import getToolByName
-from plone.app.folderui.interfaces import (IFilterSpecification,
+from plone.app.folderui.interfaces import (
             IFilterSpecificationFactory, ICatalogFacetSpecification,
             ISparqlFacetSpecification, IQueryFilterFactory,
     IQueryResults, IDateRange, ISparqlFilterSpecification,
@@ -82,8 +82,7 @@ class SparqlFilterSpecification(BaseFilterSpecification):
         if IDateRangeFactory.providedBy(v) or IDateRange.providedBy(v):
             qf = date_range_filter(v)
         else:
-            qffactory = queryUtility(IFactory, dottedname(IQueryFilter))
-            factory = qffactory(self)
+            factory = getAdapter(self, IQueryFilterFactory)
             qf = factory()
             qf.value = v
             qf.query_range = self.query_range
