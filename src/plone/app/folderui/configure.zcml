@@ -3,6 +3,10 @@
     xmlns:five="http://namespaces.zope.org/five"
     i18n_domain="plone.app.folderui">
 
+  <!-- TODO: maybe use auto include to do this 
+             CMFCore is needed to set up all the permissions we refer to in zcml -->
+  <include package="Products.CMFCore" />
+
   <five:registerPackage package="." initialize=".initialize" />
 
   <include file='profiles.zcml' />
@@ -75,7 +79,22 @@
       component=".sparqldefaults.PARTICIPANT_GENDER_FACET"
       provides=".interfaces.IFacetSpecification"
       name="foaf_gender" />
-  
+
+  <utility
+      component=".defaults.facet"
+      provides=".interfaces.IFacetSpecificationFactory"
+      name="plone.app.folderui.interfaces.ICatalogFilterConfig" />
+
+  <utility
+      component=".defaults.daterange_facet"
+      provides=".interfaces.IFacetSpecificationFactory"
+      name="plone.app.folderui.interfaces.IDateRangeConfig" />
+
+  <utility
+      component=".sparqldefaults.sparqlfacet"
+      provides=".interfaces.IFacetSpecificationFactory"
+      name="plone.app.folderui.interfaces.ISparqlFilterConfig" />
+
   <!-- event subscriber registration: --> 
   <subscriber
     for="Products.Archetypes.interfaces.IBaseContent
@@ -100,5 +119,9 @@
   <adapter
       factory=".sparqldefaults.SparqlQueryFilterAdapter" />
 
+
+  <subscriber
+    for="plone.registry.interfaces.IRecordEvent"
+    handler=".registry.record_change_handler"/>
 
 </configure>

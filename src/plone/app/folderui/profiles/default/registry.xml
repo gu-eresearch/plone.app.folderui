@@ -1,0 +1,106 @@
+<?xml version="1.0"?>
+<registry>
+
+    <records interface="plone.app.folderui.interfaces.ICatalogFilterConfig"
+             prefix="plone.app.folderui.facet.text">
+        <value key="enabled">True</value>
+        <value key="order">0</value>
+        <value key="name">text</value>
+        <value key="title">Text search</value>
+        <value key="description">Searchable full text</value>
+        <value key="index">SearchableText</value>
+        <value key="multiset">True</value>
+        <value key="query_vocabulary">False</value>
+        <value key="use_vocabulary">False</value>
+    </records>
+
+    <records interface="plone.app.folderui.interfaces.ICatalogFilterConfig"
+             prefix="plone.app.folderui.facet.Creator">
+        <value key="enabled">True</value>
+        <value key="order">1</value>
+        <value key="name">Creator</value>
+        <value key="title">Creator</value>
+        <value key="description">Content created by</value>
+        <!-- <value key="index">SearchableText</value> -->
+        <value key="multiset">False</value>
+        <value key="query_vocabulary">True</value>
+        <value key="use_vocabulary">True</value>
+    </records>
+
+    <records interface="plone.app.folderui.interfaces.ICatalogFilterConfig"
+             prefix="plone.app.folderui.facet.Type">
+        <value key="enabled">True</value>
+        <value key="order">2</value>
+        <value key="name">Type</value>
+        <value key="title">Type</value>
+        <value key="description">Content type</value>
+        <!-- <value key="index">SearchableText</value> -->
+        <value key="multiset">False</value>
+        <value key="query_vocabulary">True</value>
+        <value key="use_vocabulary">True</value>
+    </records>
+
+    <records interface="plone.app.folderui.interfaces.ICatalogFilterConfig"
+             prefix="plone.app.folderui.facet.Subject">
+        <value key="enabled">True</value>
+        <value key="order">3</value>
+        <value key="name">Subject</value>
+        <value key="title">Subject</value>
+        <value key="description">Categories/tags/subjects</value>
+        <!-- <value key="index">SearchableText</value> -->
+        <value key="multiset">True</value>
+        <value key="query_vocabulary">True</value>
+        <value key="use_vocabulary">True</value>
+    </records>
+
+    <records interface="plone.app.folderui.interfaces.IDateRangeConfig"
+             prefix="plone.app.folderui.facet.modified">
+        <value key="enabled">True</value>
+        <value key="order">4</value>
+        <value key="name">modified</value>
+        <value key="title">Modification date</value>
+        <value key="description">Date item was modified</value>
+        <value key="index">modified</value>
+        <value key="multiset">True</value>
+        <value key="ranges">
+            <element>This month</element>
+            <element>This week</element>
+            <element>Today</element>
+            <element>Past</element>
+        </value>
+        <value key="query_vocabulary">False</value>
+        <value key="use_vocabulary">True</value>
+    </records>
+
+    <records interface="plone.app.folderui.interfaces.ISparqlFilterConfig"
+             prefix="plone.app.folderui.facet.foaf_gender">
+        <value key="enabled">True</value>
+        <value key="order">5</value>
+        <value key="name">foaf_gender</value>
+        <value key="title">Participant Gender</value>
+        <value key="description">Gender of participant</value>
+        <value key="vocabquery">select distinct ?gender where { ?o &lt;http://xmlns.com/foaf/0.1/gender> ?gender}</value>
+        <value key="resultquery">select distinct ?subjecturi where {
+                            ?item &lt;http://ausnc.org.au/schemas/ausnc_md_model/document> ?subjecturi .
+                            ?item &lt;http://www.language-archives.org/OLAC/1.1/speaker> ?s .
+                            ?s &lt;http://xmlns.com/foaf/0.1/gender> "%(value)s" }</value>
+        <value key="multiset">True</value>
+        <value key="multiset_operator">AND</value>
+        <value key="use_vocabulary">True</value>
+    </records>
+
+    <records interface="plone.app.folderui.interfaces.ISparqlFilterConfig"
+             prefix="plone.app.folderui.facet.foaf_gender">
+        <value key="enabled">True</value>
+        <value key="order">6</value>
+        <value key="name">foaf_documenttype</value>
+        <value key="title">Document type</value>
+        <value key="description">Nature of document</value>
+        <value key="vocabquery">select distinct ?documenttype where { ?o &lt;http://xmlns.com/foaf/0.1/documenttype> ?documenttype}</value>
+        <value key="resultquery">select distinct ?subjecturi where { ?subjecturi &lthttp://xmlns.com/foaf/0.1/documenttype> "%(value)s" }</value>
+        <value key="multiset">True</value>
+        <value key="multiset_operator">AND</value>
+        <value key="use_vocabulary">True</value>
+    </records>
+
+</registry>

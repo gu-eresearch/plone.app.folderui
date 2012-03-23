@@ -406,6 +406,10 @@ class ISparqlFacetSpecification(IFacetSpecification):
     pass
 
 
+class IFacetSpecificationFactory(Interface):
+    pass
+
+
 class IQueryFilterFactory(Interface):
 
     def __call__(filterspec):
@@ -420,3 +424,67 @@ class ICatalogQueryFilter(IQueryFilter):
 
 class ISparqlQueryFilter(IQueryFilter):
     pass
+
+
+# these interfaces are here to drive the plone.app.registry configuration
+from zope.schema import Int
+
+
+class IBaseFilterConfig(Interface):
+
+    name = TextLine(title=u"Facet name")
+
+    enabled = Bool(title=u"enabled",
+                   default=True)
+
+    order = Int(title=u"order")
+
+    title = TextLine(title=u"Title")
+
+    description = TextLine(title=u"Description")
+
+    multiset = Bool(title=u"multiset",
+                           default=False)
+
+
+class ICatalogFilterConfig(IBaseFilterConfig):
+
+    index = TextLine(title=u"Index",
+                     required=False)
+
+    query_vocabulary = Bool(title=u"Query vocabulary",
+                                   default=False)
+
+    use_vocabulary = Bool(title=u"Use vocabulary",
+                                 default=True)
+
+
+class IDateRangeConfig(IBaseFilterConfig):
+
+    ranges = List(title=u"Ranges",
+                         value_type=TextLine())
+
+    query_vocabulary = Bool(title=u"Query vocabulary",
+                                   default=False)
+
+    index = TextLine(title=u"Index",
+                     required=False)
+
+    use_vocabulary = Bool(title=u"Use vocabulary",
+                          default=True)
+
+
+class ISparqlFilterConfig(IBaseFilterConfig):
+
+    multiset_operator = TextLine(title=u"Multiset operator",
+                                        default=u"OR")
+
+    query_vocabulary = Bool(title=u"Query vocabulary",
+                                   default=False)
+
+    use_vocabulary = Bool(title=u"Use vocabulary",
+                                 default=True)
+
+    vocabquery = Text(title=u"Vocabulary Query")
+
+    resultquery = Text(title=u"Result Query")

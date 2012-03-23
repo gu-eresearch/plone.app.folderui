@@ -31,6 +31,7 @@ setup(name='plone.app.folderui',
       zip_safe=False,
       install_requires=[
           'setuptools',
+          'Products.CMFCore',  # need this to run zcml deps too
           # -*- Extra requirements: -*-
       ],
       entry_points="""

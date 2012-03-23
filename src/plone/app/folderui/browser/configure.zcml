@@ -22,5 +22,34 @@
         template="facet_rss.pt"
         />
 
+    <browser:page
+        name="folderui_control_panel"
+        for="plone.app.layout.navigation.interfaces.INavigationRoot"
+        class=".facet_control_panel.FolderUiSettingsView"
+        template="facet_control_panel.pt"
+        permission="cmf.ManagePortal"
+        />
+
+    <browser:page
+        name="folderui_control_edit"
+        for="plone.app.layout.navigation.interfaces.INavigationRoot"
+        class=".facet_control_panel.EditFacetForm"
+        permission="cmf.ManagePortal"
+        />
+
+    <browser:page
+        name="folderui_control_add"
+        for="plone.app.layout.navigation.interfaces.INavigationRoot"
+        class=".facet_control_panel.AddFacetForm"
+        permission="cmf.ManagePortal"
+        />
+
+    <browser:page
+        name="folderui_control_action"
+        for="plone.app.layout.navigation.interfaces.INavigationRoot"
+        class=".facet_control_panel.ActionFacetView"
+        permission="cmf.ManagePortal"
+        />
+
 
 </configure>

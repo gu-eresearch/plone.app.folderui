@@ -150,6 +150,11 @@ class CatalogFacetSpecification(BaseFacetSpecification):
     implements(ICatalogFacetSpecification)
 
 
+from plone.app.folderui.registry import create_facets
+from zope.component import getUtility
+from plone.registry.interfaces import IRegistry
+
+
 class BaseSettings(object):
     """
     Default transient mapping of configuration, mapping facet names to 
@@ -164,10 +169,17 @@ class BaseSettings(object):
     def _facets(self):
         if self.__facets is None:
             self.__facets = {}
-            # getAllUtilitiesRegisteredFor ... returns overriden utilites (no names though)
-            for name, comp in getUtilitiesFor(IFacetSpecification):
-                self.__facets[comp.name] = comp
+            # # getAllUtilitiesRegisteredFor ... returns overriden utilites (no names though)
+            # for name, comp in getUtilitiesFor(IFacetSpecification):
+            #     self.__facets[comp.name] = comp
+            registry = getUtility(IRegistry)
+            for facet in create_facets(registry):
+                if facet.enabled:
+                    self.__facets[facet.name] = facet
         return self.__facets
+
+    def clear(self):
+        self.__facets = None
     
     # def __init__(self, *args):
     #     self._facets = {} # facet name (str) --> IFacetSpecification
@@ -291,13 +303,21 @@ def daterange_facet(**kwargs):
         del(kw['ranges'])
     f = facet(**kw)
     f.filters = []
-    for k,v in ranges.items():
-        if not is_daterange(v):
-            raise ValueError('Value is not date range or range factory.')
-        df = CatalogFilterSpecification()
-        df.title = df.name = unicode(k)
-        df.value = v
-        f.filters.append(df)
+    if isinstance(ranges, list):
+        for name in ranges:
+            rf = getUtility(IDateRangeFactory, name)
+            df = CatalogFilterSpecification()
+            df.title = df.name = unicode(name)
+            df.value = rf
+            f.filters.append(df)
+    elif isinstance(ranges, dict):
+        for k, v in ranges.items():
+            if not is_daterange(v):
+                raise ValueError('Value is not date range or range factory.')
+            df = CatalogFilterSpecification()
+            df.title = df.name = unicode(k)
+            df.value = v
+            f.filters.append(df)
     return f
 
 
