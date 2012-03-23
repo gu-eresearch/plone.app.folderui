@@ -90,7 +90,7 @@
     </records>
 
     <records interface="plone.app.folderui.interfaces.ISparqlFilterConfig"
-             prefix="plone.app.folderui.facet.foaf_gender">
+             prefix="plone.app.folderui.facet.foaf_documenttype">
         <value key="enabled">True</value>
         <value key="order">6</value>
         <value key="name">foaf_documenttype</value>
