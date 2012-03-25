@@ -121,16 +121,29 @@ class SparqlFacetSpecification(object):
         # TODO: result is a list of dicts with all returned values...
         #       we expect only one return column so ignore it for now
         #       we also assume here they are all literals
-        result = [unicode(x.values()[0]) for x in result]
-        # apply facet name to term (which should be a IFilterSpec)
-        result = [SparqlFilterSpecification(name=x,
-                                            title=x,
-                                            token=x,
-                                            value=x)
-                for x in result]
-        for x in result:
-            x.facet = self
-        return SimpleVocabulary(terms=result)
+        terms = []
+        for row in result:
+            if len(row) > 1:
+                # we sholud have value, title as result
+                value = unicode(row['value'])
+                title = unicode(row['title'])
+                if not title:
+                    title = value
+                facetspec = SparqlFilterSpecification(name=value,
+                                                      title=title,
+                                                      token=value,
+                                                      value=value)
+                facetspec.facet = self
+                terms.append(facetspec)
+            else:
+                value = unicode(row.values()[0])
+                facetspec = SparqlFilterSpecification(name=value,
+                                                      title=value,
+                                                      token=value,
+                                                      value=value)
+                facetspec.facet = self
+                terms.append(facetspec)
+        return SimpleVocabulary(terms=terms)
 
 
 def sparqlfacet(**kwargs):
