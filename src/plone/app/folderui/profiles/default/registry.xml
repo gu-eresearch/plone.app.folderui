@@ -103,4 +103,31 @@
         <value key="use_vocabulary">True</value>
     </records>
 
+    <records interface="plone.app.folderui.interfaces.ISparqlFilterConfig"
+             prefix="plone.app.folderui.facet.ausnc_genre">
+        <value key="enabled">True</value>
+        <value key="order">7</value>
+        <value key="name">ausnc_genre</value>
+        <value key="title">Genre Type</value>
+        <value key="description">the style etc of a document</value>
+        <value key="vocabquery">SELECT DISTINCT ?value ?title
+                                WHERE {
+                                  { ?o &lt;http://www.language-archives.org/OLAC/1.1/discourse_type> ?value .
+                                    OPTIONAL { ?value &lt;http://www.w3.org/2000/01/rdf-schema#label> ?title} }
+                                  UNION
+                                  { ?o &lt;http://ausnc.org.au/schemas/ausnc_md_model/discourse_type> ?value .
+                                    OPTIONAL { ?value &lt;http://www.w3.org/2000/01/rdf-schema#label> ?title  } }
+                                }</value>
+        <value key="resultquery">SELECT DISTINCT ?subjecturi WHERE {
+                                   { ?item &lt;http://ausnc.org.au/schemas/ausnc_md_model/document> ?subjecturi .
+                                     ?item &lt;http://www.language-archives.org/OLAC/1.1/discourse_type> &lt;%(value)s> . }
+                                   UNION
+                                   { ?item &lt;http://ausnc.org.au/schemas/ausnc_md_model/document> ?subjecturi .
+                                     ?item &lt;http://ausnc.org.au/schemas/ausnc_md_model/discourse_type> &lt;%(value)s> . }
+                                 }</value>
+        <value key="multiset">True</value>
+        <value key="multiset_operator">AND</value>
+        <value key="use_vocabulary">True</value>
+    </records>
+
 </registry>
