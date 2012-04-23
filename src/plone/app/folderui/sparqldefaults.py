@@ -162,7 +162,7 @@ PARTICIPANT_GENDER_FACET = sparqlfacet(
     name=u'foaf_gender',
     title=u'Participant Gender',
     vocabquery='select distinct ?gender where { ?o <http://xmlns.com/foaf/0.1/gender> ?gender}',
-    resultquery='select distinct ?o where { ?item <http://ausnc.org.au/schemas/ausnc_md_model/document> ?o .'
+    resultquery='select distinct ?o where { ?item <http://ns.ausnc.org.au/schemas/ausnc_md_model/document> ?o .'
                                            '?item <http://www.language-archives.org/OLAC/1.1/speaker> ?s .'
                                            '?s <http://xmlns.com/foaf/0.1/gender> "%(value)s" }',
     # index=u'',

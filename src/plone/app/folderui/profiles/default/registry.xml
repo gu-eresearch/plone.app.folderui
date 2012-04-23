@@ -81,7 +81,7 @@
         <value key="description">Gender of participant</value>
         <value key="vocabquery">select distinct ?gender where { ?o &lt;http://xmlns.com/foaf/0.1/gender> ?gender}</value>
         <value key="resultquery">select distinct ?subjecturi where {
-                            ?item &lt;http://ausnc.org.au/schemas/ausnc_md_model/document> ?subjecturi .
+                            ?item &lt;http://ns.ausnc.org.au/schemas/ausnc_md_model/document> ?subjecturi .
                             ?item &lt;http://www.language-archives.org/OLAC/1.1/speaker> ?s .
                             ?s &lt;http://xmlns.com/foaf/0.1/gender> "%(value)s" }</value>
         <value key="multiset">True</value>
@@ -115,15 +115,15 @@
                                   { ?o &lt;http://www.language-archives.org/OLAC/1.1/discourse_type> ?value .
                                     OPTIONAL { ?value &lt;http://www.w3.org/2000/01/rdf-schema#label> ?title} }
                                   UNION
-                                  { ?o &lt;http://ausnc.org.au/schemas/ausnc_md_model/discourse_type> ?value .
+                                  { ?o &lt;http://ns.ausnc.org.au/schemas/ausnc_md_model/discourse_type> ?value .
                                     OPTIONAL { ?value &lt;http://www.w3.org/2000/01/rdf-schema#label> ?title  } }
                                 }</value>
         <value key="resultquery">SELECT DISTINCT ?subjecturi WHERE {
-                                   { ?item &lt;http://ausnc.org.au/schemas/ausnc_md_model/document> ?subjecturi .
+                                   { ?item &lt;http://ns.ausnc.org.au/schemas/ausnc_md_model/document> ?subjecturi .
                                      ?item &lt;http://www.language-archives.org/OLAC/1.1/discourse_type> &lt;%(value)s> . }
                                    UNION
-                                   { ?item &lt;http://ausnc.org.au/schemas/ausnc_md_model/document> ?subjecturi .
-                                     ?item &lt;http://ausnc.org.au/schemas/ausnc_md_model/discourse_type> &lt;%(value)s> . }
+                                   { ?item &lt;http://ns.ausnc.org.au/schemas/ausnc_md_model/document> ?subjecturi .
+                                     ?item &lt;http://ns.ausnc.org.au/schemas/ausnc_md_model/discourse_type> &lt;%(value)s> . }
                                  }</value>
         <value key="multiset">True</value>
         <value key="multiset_operator">AND</value>
