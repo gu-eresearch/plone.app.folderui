@@ -95,7 +95,7 @@ class TestListing(BaseTestCase):
         qf1.conjunction = qf2.conjunction = 'OR'
         listing_or = FacetedListing(self.target,
             ComposedQuery(filters=[qf1, qf2]))
-        asset len(listing_or.result) == 2
+        assert len(listing_or.result) == 2
         qf1.conjunction = qf2.conjunction = 'AND'
         listing_and = FacetedListing(self.target,
             ComposedQuery(filters=[qf1, qf2]))
