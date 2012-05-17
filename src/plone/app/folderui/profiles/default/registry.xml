@@ -96,7 +96,7 @@
         <value key="name">foaf_documenttype</value>
         <value key="title">Document type</value>
         <value key="description">Nature of document</value>
-        <value key="vocabquery">select distinct ?documenttype where { ?o &lt;http://xmlns.com/foaf/0.1/documenttype> ?documenttype}</value>
+        <value key="vocabquery">select distinct ?documenttype where { ?o &lt;http://purl.org/dc/terms/type> ?documenttype}</value>
         <value key="resultquery">select distinct ?subjecturi where { ?subjecturi &lt;http://xmlns.com/foaf/0.1/documenttype> "%(value)s" }</value>
         <value key="multiset">True</value>
         <value key="multiset_operator">AND</value>
