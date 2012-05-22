@@ -130,4 +130,23 @@
         <value key="use_vocabulary">True</value>
     </records>
 
+    <records interface="plone.app.folderui.interfaces.ISparqlFilterConfig"
+             prefix="plone.app.folderui.facet.ausnc_collections">
+        <value key="enabled">True</value>
+        <value key="order">1</value>
+        <value key="name">ausnc_collections</value>
+        <value key="title">Collections</value>
+        <value key="description">Original source of item</value>
+        <value key="vocabquery">SELECT DISTINCT ?value ?title
+                                WHERE {
+                                  ?value &lt;http://purl.org/dc/terms/isPartOf> &lt;http://ns.ausnc.org.au/corpora/ausnc> .
+                                  ?value &lt;http://purl.org/dc/elements/1.1/title> ?title
+                                }</value>
+        <value key="resultquery">SELECT DISTINCT ?subjecturi WHERE { ?item &lt;http://ns.ausnc.org.au/schemas/ausnc_md_model/document> ?subjecturi .
+                                    ?item &lt;http://purl.org/dc/terms/isPartOf> &lt;%(value)s> }</value>
+        <value key="multiset">True</value>
+        <value key="multiset_operator">AND</value>
+        <value key="use_vocabulary">True</value>
+    </records>
+
 </registry>
