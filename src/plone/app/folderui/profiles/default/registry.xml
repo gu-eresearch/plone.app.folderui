@@ -72,81 +72,81 @@
         <value key="use_vocabulary">True</value>
     </records>
 
-    <records interface="plone.app.folderui.interfaces.ISparqlFilterConfig"
-             prefix="plone.app.folderui.facet.foaf_gender">
-        <value key="enabled">True</value>
-        <value key="order">5</value>
-        <value key="name">foaf_gender</value>
-        <value key="title">Participant Gender</value>
-        <value key="description">Gender of participant</value>
-        <value key="vocabquery">select distinct ?gender where { ?o &lt;http://xmlns.com/foaf/0.1/gender> ?gender}</value>
-        <value key="resultquery">select distinct ?subjecturi where {
-                            ?item &lt;http://ns.ausnc.org.au/schemas/ausnc_md_model/document> ?subjecturi .
-                            ?item &lt;http://www.language-archives.org/OLAC/1.1/speaker> ?s .
-                            ?s &lt;http://xmlns.com/foaf/0.1/gender> "%(value)s" }</value>
-        <value key="multiset">True</value>
-        <value key="multiset_operator">AND</value>
-        <value key="use_vocabulary">True</value>
-    </records>
+    <!-- <records interface="plone.app.folderui.interfaces.ISparqlFilterConfig" -->
+    <!--          prefix="plone.app.folderui.facet.foaf_gender"> -->
+    <!--     <value key="enabled">True</value> -->
+    <!--     <value key="order">5</value> -->
+    <!--     <value key="name">foaf_gender</value> -->
+    <!--     <value key="title">Participant Gender</value> -->
+    <!--     <value key="description">Gender of participant</value> -->
+    <!--     <value key="vocabquery">select distinct ?gender where { ?o &lt;http://xmlns.com/foaf/0.1/gender> ?gender}</value> -->
+    <!--     <value key="resultquery">select distinct ?subjecturi where { -->
+    <!--                         ?item &lt;http://ns.ausnc.org.au/schemas/ausnc_md_model/document> ?subjecturi . -->
+    <!--                         ?item &lt;http://www.language-archives.org/OLAC/1.1/speaker> ?s . -->
+    <!--                         ?s &lt;http://xmlns.com/foaf/0.1/gender> "%(value)s" }</value> -->
+    <!--     <value key="multiset">True</value> -->
+    <!--     <value key="multiset_operator">AND</value> -->
+    <!--     <value key="use_vocabulary">True</value> -->
+    <!-- </records> -->
 
-    <records interface="plone.app.folderui.interfaces.ISparqlFilterConfig"
-             prefix="plone.app.folderui.facet.foaf_documenttype">
-        <value key="enabled">True</value>
-        <value key="order">6</value>
-        <value key="name">foaf_documenttype</value>
-        <value key="title">Document type</value>
-        <value key="description">Nature of document</value>
-        <value key="vocabquery">select distinct ?documenttype where { ?o &lt;http://purl.org/dc/terms/type> ?documenttype}</value>
-        <value key="resultquery">select distinct ?subjecturi where { ?subjecturi &lt;http://xmlns.com/foaf/0.1/documenttype> "%(value)s" }</value>
-        <value key="multiset">True</value>
-        <value key="multiset_operator">AND</value>
-        <value key="use_vocabulary">True</value>
-    </records>
+    <!-- <records interface="plone.app.folderui.interfaces.ISparqlFilterConfig" -->
+    <!--          prefix="plone.app.folderui.facet.foaf_documenttype"> -->
+    <!--     <value key="enabled">True</value> -->
+    <!--     <value key="order">6</value> -->
+    <!--     <value key="name">foaf_documenttype</value> -->
+    <!--     <value key="title">Document type</value> -->
+    <!--     <value key="description">Nature of document</value> -->
+    <!--     <value key="vocabquery">select distinct ?documenttype where { ?o &lt;http://purl.org/dc/terms/type> ?documenttype}</value> -->
+    <!--     <value key="resultquery">select distinct ?subjecturi where { ?subjecturi &lt;http://xmlns.com/foaf/0.1/documenttype> "%(value)s" }</value> -->
+    <!--     <value key="multiset">True</value> -->
+    <!--     <value key="multiset_operator">AND</value> -->
+    <!--     <value key="use_vocabulary">True</value> -->
+    <!-- </records> -->
 
-    <records interface="plone.app.folderui.interfaces.ISparqlFilterConfig"
-             prefix="plone.app.folderui.facet.ausnc_genre">
-        <value key="enabled">True</value>
-        <value key="order">7</value>
-        <value key="name">ausnc_genre</value>
-        <value key="title">Genre Type</value>
-        <value key="description">the style etc of a document</value>
-        <value key="vocabquery">SELECT DISTINCT ?value ?title
-                                WHERE {
-                                  { ?o &lt;http://www.language-archives.org/OLAC/1.1/discourse_type> ?value .
-                                    OPTIONAL { ?value &lt;http://www.w3.org/2000/01/rdf-schema#label> ?title} }
-                                  UNION
-                                  { ?o &lt;http://ns.ausnc.org.au/schemas/ausnc_md_model/discourse_type> ?value .
-                                    OPTIONAL { ?value &lt;http://www.w3.org/2000/01/rdf-schema#label> ?title  } }
-                                }</value>
-        <value key="resultquery">SELECT DISTINCT ?subjecturi WHERE {
-                                   { ?item &lt;http://ns.ausnc.org.au/schemas/ausnc_md_model/document> ?subjecturi .
-                                     ?item &lt;http://www.language-archives.org/OLAC/1.1/discourse_type> &lt;%(value)s> . }
-                                   UNION
-                                   { ?item &lt;http://ns.ausnc.org.au/schemas/ausnc_md_model/document> ?subjecturi .
-                                     ?item &lt;http://ns.ausnc.org.au/schemas/ausnc_md_model/discourse_type> &lt;%(value)s> . }
-                                 }</value>
-        <value key="multiset">True</value>
-        <value key="multiset_operator">AND</value>
-        <value key="use_vocabulary">True</value>
-    </records>
+    <!-- <records interface="plone.app.folderui.interfaces.ISparqlFilterConfig" -->
+    <!--          prefix="plone.app.folderui.facet.ausnc_genre"> -->
+    <!--     <value key="enabled">True</value> -->
+    <!--     <value key="order">7</value> -->
+    <!--     <value key="name">ausnc_genre</value> -->
+    <!--     <value key="title">Genre Type</value> -->
+    <!--     <value key="description">the style etc of a document</value> -->
+    <!--     <value key="vocabquery">SELECT DISTINCT ?value ?title -->
+    <!--                             WHERE { -->
+    <!--                               { ?o &lt;http://www.language-archives.org/OLAC/1.1/discourse_type> ?value . -->
+    <!--                                 OPTIONAL { ?value &lt;http://www.w3.org/2000/01/rdf-schema#label> ?title} } -->
+    <!--                               UNION -->
+    <!--                               { ?o &lt;http://ns.ausnc.org.au/schemas/ausnc_md_model/discourse_type> ?value . -->
+    <!--                                 OPTIONAL { ?value &lt;http://www.w3.org/2000/01/rdf-schema#label> ?title  } } -->
+    <!--                             }</value> -->
+    <!--     <value key="resultquery">SELECT DISTINCT ?subjecturi WHERE { -->
+    <!--                                { ?item &lt;http://ns.ausnc.org.au/schemas/ausnc_md_model/document> ?subjecturi . -->
+    <!--                                  ?item &lt;http://www.language-archives.org/OLAC/1.1/discourse_type> &lt;%(value)s> . } -->
+    <!--                                UNION -->
+    <!--                                { ?item &lt;http://ns.ausnc.org.au/schemas/ausnc_md_model/document> ?subjecturi . -->
+    <!--                                  ?item &lt;http://ns.ausnc.org.au/schemas/ausnc_md_model/discourse_type> &lt;%(value)s> . } -->
+    <!--                              }</value> -->
+    <!--     <value key="multiset">True</value> -->
+    <!--     <value key="multiset_operator">AND</value> -->
+    <!--     <value key="use_vocabulary">True</value> -->
+    <!-- </records> -->
 
-    <records interface="plone.app.folderui.interfaces.ISparqlFilterConfig"
-             prefix="plone.app.folderui.facet.ausnc_collections">
-        <value key="enabled">True</value>
-        <value key="order">1</value>
-        <value key="name">ausnc_collections</value>
-        <value key="title">Collections</value>
-        <value key="description">Original source of item</value>
-        <value key="vocabquery">SELECT DISTINCT ?value ?title
-                                WHERE {
-                                  ?value &lt;http://purl.org/dc/terms/isPartOf> &lt;http://ns.ausnc.org.au/corpora/ausnc> .
-                                  ?value &lt;http://purl.org/dc/elements/1.1/title> ?title
-                                }</value>
-        <value key="resultquery">SELECT DISTINCT ?subjecturi WHERE { ?item &lt;http://ns.ausnc.org.au/schemas/ausnc_md_model/document> ?subjecturi .
-                                    ?item &lt;http://purl.org/dc/terms/isPartOf> &lt;%(value)s> }</value>
-        <value key="multiset">True</value>
-        <value key="multiset_operator">AND</value>
-        <value key="use_vocabulary">True</value>
-    </records>
+    <!-- <records interface="plone.app.folderui.interfaces.ISparqlFilterConfig" -->
+    <!--          prefix="plone.app.folderui.facet.ausnc_collections"> -->
+    <!--     <value key="enabled">True</value> -->
+    <!--     <value key="order">1</value> -->
+    <!--     <value key="name">ausnc_collections</value> -->
+    <!--     <value key="title">Collections</value> -->
+    <!--     <value key="description">Original source of item</value> -->
+    <!--     <value key="vocabquery">SELECT DISTINCT ?value ?title -->
+    <!--                             WHERE { -->
+    <!--                               ?value &lt;http://purl.org/dc/terms/isPartOf> &lt;http://ns.ausnc.org.au/corpora/ausnc> . -->
+    <!--                               ?value &lt;http://purl.org/dc/elements/1.1/title> ?title -->
+    <!--                             }</value> -->
+    <!--     <value key="resultquery">SELECT DISTINCT ?subjecturi WHERE { ?item &lt;http://ns.ausnc.org.au/schemas/ausnc_md_model/document> ?subjecturi . -->
+    <!--                                 ?item &lt;http://purl.org/dc/terms/isPartOf> &lt;%(value)s> }</value> -->
+    <!--     <value key="multiset">True</value> -->
+    <!--     <value key="multiset_operator">AND</value> -->
+    <!--     <value key="use_vocabulary">True</value> -->
+    <!-- </records> -->
 
 </registry>

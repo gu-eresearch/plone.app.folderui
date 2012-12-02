@@ -6,7 +6,7 @@ from zope.interface import implementer, implements
 from zope.schema import getFieldsInOrder
 from zope.schema.fieldproperty import FieldProperty
 from zope.schema.vocabulary import SimpleVocabulary
-from org.ausnc.rdf.interfaces import IORDF
+from gu.plone.rdf.interfaces import IORDF
 from Products.CMFCore.utils import getToolByName
 from plone.app.folderui.interfaces import (
             IFilterSpecificationFactory, ICatalogFacetSpecification,

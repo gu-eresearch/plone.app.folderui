@@ -1,6 +1,7 @@
 <configure
     xmlns="http://namespaces.zope.org/zope"
     xmlns:five="http://namespaces.zope.org/five"
+    xmlns:browser="http://namespaces.zope.org/browser"
     i18n_domain="plone.app.folderui">
 
   <!-- TODO: maybe use auto include to do this 
@@ -123,5 +124,8 @@
   <subscriber
     for="plone.registry.interfaces.IRecordEvent"
     handler=".registry.record_change_handler"/>
+
+  <browser:resourceDirectory
+        directory="static" name="plone.app.folderui" />
 
 </configure>

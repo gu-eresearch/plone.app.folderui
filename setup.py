@@ -1,7 +1,7 @@
 from setuptools import setup, find_packages
 import os
 
-version = '0.03-gurc2'
+version = '0.03-gurc3'
 
 def read(*rnames):
     '''read files given a sequence of path segments'''
@@ -32,6 +32,7 @@ setup(name='plone.app.folderui',
       install_requires=[
           'setuptools',
           'Products.CMFCore',  # need this to run zcml deps too
+          'Products.AdvancedQuery',
           # -*- Extra requirements: -*-
       ],
       entry_points="""
