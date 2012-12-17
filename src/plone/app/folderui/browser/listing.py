@@ -189,13 +189,13 @@ class ListingView(BrowserView):
     
     def include_link(self):
         """link to include subfolders"""
-        return 'facet_listing?%s&include_subfolders' % \
-            self.facet_state_querystring()
+        return '%s?%s&include_subfolders' % \
+            (self.__name__, self.facet_state_querystring())
     
     def exclude_link(self):
         """link to exclude subfolders"""
         qs = self.facet_state_querystring()
-        return 'facet_listing?%s' % qs.replace('&include_subfolders','')
+        return '%s?%s' % (self.__name__, qs.replace('&include_subfolders',''))
     
     def _link_fragment(self, facet, filter):
         return urllib.urlencode({('facet.%s' % facet.name) : filter.name})
@@ -214,7 +214,7 @@ class ListingView(BrowserView):
             qs = '%s&%s' % (base, qs)
         if self.include_subfolders:
             qs = '%s&include_subfolders' % qs
-        return 'facet_listing?%s' % qs
+        return '%s?%s' % (self.__name__, qs)
     
     def strike_filter(self, facet, filter, qs=None):
         """
