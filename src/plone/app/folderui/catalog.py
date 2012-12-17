@@ -98,7 +98,7 @@ def mkaquery(composed, extra=None):
 
 
 from zope.component import getUtility
-from gu.plone.rdf.interfaces import IORDF
+from gu.z3cform.rdf.interfaces import IORDF
 
 
 def mkqueryfromsparql(composed):
