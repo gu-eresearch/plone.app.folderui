@@ -61,8 +61,9 @@ class SparqlFilterSpecification(BaseFilterSpecification):
 
         # get query result
         tool = getUtility(IORDF)
-        result = tool.getHandler().query(facet.resultquery % {'value': self.value})
-        subjecturis = [unicode(x.values()[0]) for x in result]
+        result = tool.getHandler().query(facet.resultquery % {'value':
+        self.value})
+        subjecturis = [unicode(x[0]) for x in result]
 
         catalog = getToolByName(context, 'portal_catalog')
         result = catalog(subjecturi=subjecturis)
@@ -125,8 +126,13 @@ class SparqlFacetSpecification(object):
         for row in result:
             if len(row) > 1:
                 # we sholud have value, title as result
-                value = unicode(row['value'])
-                title = unicode(row['title'])
+                # assume first var is value
+                #        secnd var is title
+                # assert (result.vars.index('value'), 0)
+                # assert (result.vars.index('title'), 1)
+
+                value = unicode(row[0])
+                title = unicode(row[1])
                 if not title:
                     title = value
                 facetspec = SparqlFilterSpecification(name=value,

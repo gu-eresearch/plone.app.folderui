@@ -122,7 +122,7 @@ def mkqueryfromsparql(composed):
                 result = tool.getHandler().query(
                     facet.resultquery % {'value': qf.value})  # filterspec.value
                 # TODO: do a lazymap here?
-                subjecturis = [unicode(x.values()[0]) for x in result]
+                subjecturis = [unicode(x[0]) for x in result]
                 query = AdvancedQuery.In('subjecturi', subjecturis)
                 if facet.name in queries:
                     if isinstance(queries[facet.name],
