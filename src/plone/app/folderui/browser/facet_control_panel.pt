@@ -17,10 +17,11 @@
     
     $().ready(function() {
         $('a.facetEditLink').prepOverlay({
+            // urlmatch: '', urlreplace: '',
             subtype: 'ajax',
             filter: common_content_filter,
-            formselector: 'form:has(div[id^=formfield-form-widgets-value])',
-            closeselector: '[name=form.buttons.cancel]',
+            formselector: 'form:has(div[id^=formfield-form-widgets-])',
+            closeselector: '[name="form.buttons.cancel"]',
             noform: function(el) {
                 var o = $(el);
                 var emsg = o.find('dl.portalMessage.error');
@@ -35,7 +36,6 @@
     
 })(jQuery);
 </script>
-
 
     <a href=""
        id="setup-link"
@@ -61,6 +61,17 @@
                 <th i18n:translate="heading_value">Actions</th>
             </tr>
         </thead>
+        <tfoot>
+            <tr>
+               <td colspan="6">
+                   <a class="facetEditLink"
+                      tal:repeat="facet_type_term view/facet_types"
+                      tal:attributes="href string:${context/absolute_url}/folderui_control_add/${facet_type_term/token}"
+                      tal:content="string:Add ${facet_type_term/title}"
+                      >Add Facet</a>
+               </td>
+            </tr>
+        </tfoot>
         <tbody>
             <tal:loop repeat="facet view/getContent">
                 <tr tal:define="oddrow repeat/facet/odd;"
@@ -88,17 +99,6 @@
                 </tr>
             </tal:loop>
         </tbody>
-        <tfooter>
-            <tr>
-               <td colspan="6">
-                   <a class="facetEditLink"
-                      tal:repeat="facet_type_term view/facet_types"
-                      tal:attributes="href string:${context/absolute_url}/folderui_control_add/${facet_type_term/token}"
-                      tal:content="string:Add ${facet_type_term/title}"
-                      >Add Facet</a>
-               </td>
-            </tr>
-        </tfooter>
     </table>
 
 </div>
