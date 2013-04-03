@@ -17,8 +17,10 @@ alsoProvides(capitalize, ITitleLookup)
 def member_fullname(value, context):
     mtool = getToolByName(context, 'portal_membership')
     info = mtool.getMemberInfo(value)
-    v = info.get('fullname',None)
-    if v: return unicode(v)
+    # check if there is really a user object available for a user id
+    if info is not None:
+        v = info.get('fullname',None)
+        if v: return unicode(v)
     return unicode(value)
 
 alsoProvides(member_fullname, ITitleLookup)
