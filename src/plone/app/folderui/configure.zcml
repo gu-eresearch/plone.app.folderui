@@ -2,10 +2,9 @@
     xmlns="http://namespaces.zope.org/zope"
     xmlns:five="http://namespaces.zope.org/five"
     xmlns:browser="http://namespaces.zope.org/browser"
-    i18n_domain="plone.app.folderui">
+    i18n_domain="plone.app.folderui"
+    >
 
-  <!-- TODO: maybe use auto include to do this 
-             CMFCore is needed to set up all the permissions we refer to in zcml -->
   <include package="Products.CMFCore" />
 
   <five:registerPackage package="." initialize=".initialize" />
@@ -16,116 +15,134 @@
 
   <!-- factory registration: -->
   <utility
-    component=".catalog.AdvancedQueryRunner"
-    provides="zope.component.interfaces.IFactory"
-    name="plone.app.folderui.interfaces.IQueryRunner" />
+      component=".catalog.AdvancedQueryRunner"
+      provides="zope.component.interfaces.IFactory"
+      name="plone.app.folderui.interfaces.IQueryRunner"
+      />
 
   <utility
-    component=".query.ComposedQuery"
-    provides="zope.component.interfaces.IFactory"
-    name="plone.app.folderui.interfaces.IComposedQuery" />
+      component=".query.ComposedQuery"
+      provides="zope.component.interfaces.IFactory"
+      name="plone.app.folderui.interfaces.IComposedQuery" 
+      />
 
   <!-- non-factory utility registrations: -->
   <utility
-    component=".defaults.FACETS"
-    provides=".interfaces.IFacetSettings"
-    />
+      component=".defaults.FACETS"
+      provides=".interfaces.IFacetSettings"
+      />
   
   <!-- dynamic vocabulary factory registrations -->
   <utility
-    component=".vocab.all_creators_vfactory"
-    provides="zope.schema.interfaces.IVocabularyFactory"
-    name="Creator"
-    />
+      component=".vocab.all_creators_vfactory"
+      provides="zope.schema.interfaces.IVocabularyFactory"
+      name="Creator"
+      />
   
   <utility
-    component=".vocab.all_categories_vfactory"
-    provides="zope.schema.interfaces.IVocabularyFactory"
-    name="Subject"
-    />
+      component=".vocab.all_categories_vfactory"
+      provides="zope.schema.interfaces.IVocabularyFactory"
+      name="Subject"
+      />
   
   <utility
-    component=".vocab.all_types_vfactory"
-    provides="zope.schema.interfaces.IVocabularyFactory"
-    name="Type"
-    />
+      component=".vocab.all_types_vfactory"
+      provides="zope.schema.interfaces.IVocabularyFactory"
+      name="Type"
+      />
 
   <!-- register facets -->
   <utility
       component=".defaults.TEXT_FACET"
       provides=".interfaces.IFacetSpecification"
-      name="text" />
+      name="text"
+      />
 
   <utility
       component=".defaults.CREATOR_FACET"
       provides=".interfaces.IFacetSpecification"
-      name="creator" />
+      name="creator"
+      />
 
   <utility
       component=".defaults.TYPE_FACET"
       provides=".interfaces.IFacetSpecification"
-      name="type" />
+      name="type"
+      />
 
   <utility
       component=".defaults.SUBJECT_FACET"
       provides=".interfaces.IFacetSpecification"
-      name="subject" />
+      name="subject"
+      />
 
   <utility
       component=".defaults.MODIFIED_FACET"
       provides=".interfaces.IFacetSpecification"
-      name="modified" />
+      name="modified"
+      />
 
   <utility
       component=".sparqldefaults.PARTICIPANT_GENDER_FACET"
       provides=".interfaces.IFacetSpecification"
-      name="foaf_gender" />
+      name="foaf_gender"
+      />
 
   <utility
       component=".defaults.facet"
       provides=".interfaces.IFacetSpecificationFactory"
-      name="plone.app.folderui.interfaces.ICatalogFilterConfig" />
+      name="plone.app.folderui.interfaces.ICatalogFilterConfig"
+      />
 
   <utility
       component=".defaults.daterange_facet"
       provides=".interfaces.IFacetSpecificationFactory"
-      name="plone.app.folderui.interfaces.IDateRangeConfig" />
+      name="plone.app.folderui.interfaces.IDateRangeConfig" 
+      />
 
   <utility
       component=".sparqldefaults.sparqlfacet"
       provides=".interfaces.IFacetSpecificationFactory"
-      name="plone.app.folderui.interfaces.ISparqlFilterConfig" />
+      name="plone.app.folderui.interfaces.ISparqlFilterConfig" 
+      />
 
   <!-- event subscriber registration: --> 
   <subscriber
-    for="Products.Archetypes.interfaces.IBaseContent
-         zope.lifecycleevent.interfaces.IObjectModifiedEvent"
-    handler=".utils.modify_handler"
-    />
+      for="Products.Archetypes.interfaces.IBaseContent
+           zope.lifecycleevent.interfaces.IObjectModifiedEvent"
+      handler=".utils.modify_handler"
+      />
 
   <adapter
-      factory=".sparqldefaults.CatalogFilterSpecificationAdapter" />
+      factory=".sparqldefaults.CatalogFilterSpecificationAdapter" 
+      />
 
   <adapter
-      factory=".sparqldefaults.SparqlFilterSpecificationAdapter" />
+      factory=".sparqldefaults.SparqlFilterSpecificationAdapter"  
+      />
 
   <adapter
       for=".interfaces.IDateRange"
-      factory=".sparqldefaults.CatalogQueryFilterAdapter" />
+      factory=".sparqldefaults.CatalogQueryFilterAdapter" 
+      />
 
   <adapter
       for=".interfaces.ICatalogFilterSpecification"
-      factory=".sparqldefaults.CatalogQueryFilterAdapter" />
+      factory=".sparqldefaults.CatalogQueryFilterAdapter"  
+      />
 
   <adapter
-      factory=".sparqldefaults.SparqlQueryFilterAdapter" />
-
+      factory=".sparqldefaults.SparqlQueryFilterAdapter"  
+      />
 
   <subscriber
-    for="plone.registry.interfaces.IRecordEvent"
-    handler=".registry.record_change_handler"/>
+      for="plone.registry.interfaces.IRecordEvent"
+      handler=".registry.record_change_handler"
+      />
 
   <browser:resourceDirectory
-        directory="static" name="plone.app.folderui" />
+      directory="static"
+      name="plone.app.folderui"
+      />
 
 </configure>
