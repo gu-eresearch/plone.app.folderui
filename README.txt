@@ -1,6 +1,7 @@
 plone.app.folderui: faceted folder interface for Plone
 ======================================================
 
+
 Overview
 --------
 
@@ -11,6 +12,7 @@ This package is in early development: YMMV, feedback appreciated.
 
 Feedback
 --------
+
 This project is in active (early) development as part of the 2009 Plone
 Foundation participation in Google Summer of Code.  The primary author
 is Sean Upton (sdupton@gmail.com / supton on #plone); Carsten Senger is
@@ -18,5 +20,5 @@ mentor for this GSoC project. Please feel free to provide feedback.
 
 Changes
 -------
-See doc/HISTORY.txt and doc/TODO.txt
 
+See doc/HISTORY.txt and doc/TODO.txt
