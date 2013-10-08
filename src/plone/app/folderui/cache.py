@@ -5,6 +5,7 @@ from BTrees.OIBTree import OIBTree
 from persistent import Persistent
 
 from interfaces import (
+    IQueryFilter,
     IRecordSetCache, IFilterSetIdCache,
     IRecordInvalidationSet, ISetCacheTools,
 )
