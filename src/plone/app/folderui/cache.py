@@ -1,8 +1,11 @@
-from zope.interface import implements
 from BTrees.IIBTree import IISet
 from BTrees.IOBTree import IOBTree
 from BTrees.OIBTree import OIBTree
+
 from persistent import Persistent
+
+from zope.interface import implements
+
 
 from interfaces import (
     IQueryFilter,
