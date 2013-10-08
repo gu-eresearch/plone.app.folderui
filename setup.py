@@ -1,24 +1,30 @@
-from setuptools import setup, find_packages
-import os
+#!/usr/bin/env python
 
-version = '0.03-gurc3'
+import os
+from setuptools import setup, find_packages
+
+version = "0.03-gurc3"
+
 
 def read(*rnames):
-    '''read files given a sequence of path segments'''
+    """Read files given a sequence of path segments"""
+
     return open(os.path.join(os.path.dirname(__file__), *rnames)).read()
 
 
 setup(name='plone.app.folderui',
       version=version,
       description="Folder user interface enhancements for Plone.",
-      long_description=read('README.txt') + "\n" +
-                       read('docs', 'HISTORY.txt'),
+      long_description=(
+          read('README.txt') + "\n" +
+          read('docs', 'HISTORY.txt'),
+      ),
       # Get more strings from http://www.python.org/pypi?%3Aaction=list_classifiers
       classifiers=[
-        "Framework :: Plone",
-        "Programming Language :: Python",
-        "Topic :: Software Development :: Libraries :: Python Modules",
-        ],
+          "Framework :: Plone",
+          "Programming Language :: Python",
+          "Topic :: Software Development :: Libraries :: Python Modules",
+      ],
       keywords='',
       author='Sean Upton',
       author_email='sdupton@gmail.com',
