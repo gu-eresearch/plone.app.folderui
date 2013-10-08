@@ -22,7 +22,7 @@ def filter_cached_set(query, context=None):
     sm = sitemanager_for(context)
     set_cache = sm.queryUtility(IRecordSetCache)
     filter_setid_cache = sm.queryUtility(IFilterSetIdCache)
-    if set_cache is not None and filter_set_id_cache is not None:
+    if set_cache is not None and filter_setid_cache is not None:
         setid = filter_setid_cache.get(query.uid, None)
         if setid is None:
             return None
