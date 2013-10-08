@@ -253,10 +253,7 @@ class ListingView(BrowserView):
         return fragment in self.facet_state_querystring()
 
     def count(self, facet, filter):
-        # XXX: WTF?! Fix this! --JamesMills / prologic (20131008)
-        #if not hasattr(self, '_counts'):
-        #    counts = self.counts  # load first time
         key = '%s.%s' % (facet.name, filter.name)
-        if key in self._counts:
-            return self._counts[key]  # return preloaded length of intersection
+        if key in self.counts:
+            return self.counts[key]  # return preloaded length of intersection
         return 0
