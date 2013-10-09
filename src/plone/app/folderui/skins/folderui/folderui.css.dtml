@@ -29,7 +29,7 @@ a.strike {
     margin-bottom:-3px;
     padding: 16px 0 0 0;
     overflow: hidden;
-    background-image: url(&dtml-portal_url;/delete_icon.gif);
+    background-image: url(&dtml-portal_url;/delete_icon.png);
     background-repeat: no-repeat;
     clear:both;
     height: 0px !important;
