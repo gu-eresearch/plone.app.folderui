@@ -43,6 +43,7 @@ class ListingView(BrowserView):
 
     def __init__(self, context, request):
         BrowserView.__init__(self, context, request)
+
         self._request_fixups()
         self.load_filter_state()
         query = self.compose_from_query_state()
