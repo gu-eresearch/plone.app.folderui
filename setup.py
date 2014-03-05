@@ -3,7 +3,7 @@
 import os
 from setuptools import setup, find_packages
 
-version = "0.03-gurc4"
+version = "0.03-gurc5"
 
 
 def read(*rnames):
